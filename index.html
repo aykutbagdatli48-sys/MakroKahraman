@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makro Kahraman! 🦸</title>
+<meta name="description" content="Diyabetli çocuklar için makro besin öğelerini öğreten eğlenceli oyun!">
+<meta name="theme-color" content="#FF6B35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Makro Kahraman">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Makro%20Kahraman!%22%2C%22short_name%22%3A%22Makro%20Kahraman%22%2C%22description%22%3A%22Diyabetli%20%C3%A7ocuklar%20i%C3%A7in%20makro%20besin%20%C3%B6%C4%9Felerini%20%C3%B6%C4%9Freten%20e%C4%9Flenceli%20oyun!%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F0F7FF%22%2C%22theme_color%22%3A%22%23FF6B35%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fvia.placeholder.com%2F192x192%2FFF6B35%2Fwhite%3Ftext%3DM%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fvia.placeholder.com%2F512x512%2FFF6B35%2Fwhite%3Ftext%3DM%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    const sw = `self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>new Response('')));});`;
+    const blob = new Blob([sw],{type:'application/javascript'});
+    const url = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url).catch(()=>{});
+  });
+}
+</script>
+<style>
+:root{
+  --karb:#FF6B35;--karb-l:#FFE0D0;
+  --protein:#4ECDC4;--protein-l:#D0F5F3;
+  --yag:#FFD93D;--yag-l:#FFF8D0;
+  --bg:#F0F7FF;--text:#2D3561;
+  --sh:0 8px 32px rgba(45,53,97,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;padding:20px 16px 60px;
+  background-image:radial-gradient(circle at 20% 20%,#FFE0D044 0%,transparent 50%),
+    radial-gradient(circle at 80% 80%,#D0F5F344 0%,transparent 50%);}
+.screen{display:none;flex-direction:column;align-items:center;width:100%;max-width:540px;gap:14px;}
+.screen.active{display:flex;}
+
+/* FIXED BAR */
+.fbar{position:fixed;top:12px;left:12px;display:flex;gap:7px;z-index:400;}
+.ibt{background:white;border:none;border-radius:50%;width:38px;height:38px;font-size:1.1rem;
+  cursor:pointer;box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
+.ibt:hover{transform:scale(1.12);}
+
+/* ── NAME ── */
+#nameScreen{justify-content:center;min-height:85vh;gap:18px;}
+.nh{font-family:'Baloo 2',cursive;font-size:2.6rem;font-weight:800;color:var(--text);text-align:center;line-height:1.1;}
+.nh span{color:#FF6B35;}
+.nsub{color:#6b7280;font-size:.95rem;text-align:center;}
+.ni{width:100%;max-width:300px;padding:13px 20px;border-radius:50px;border:2px solid #e5e7eb;
+  font-family:'Baloo 2',cursive;font-size:1.05rem;color:var(--text);outline:none;text-align:center;
+  background:white;box-shadow:var(--sh);transition:border-color .2s;}
+.ni:focus{border-color:#4ECDC4;}
+.bbtn{background:linear-gradient(135deg,#4ECDC4,#2eb5ac);color:white;border:none;border-radius:50px;
+  padding:13px 34px;font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 15px rgba(78,205,196,.4);transition:transform .15s;}
+.bbtn:hover{transform:translateY(-2px);}
+.bbtn.or{background:linear-gradient(135deg,#FF6B35,#ff4500);box-shadow:0 4px 15px rgba(255,107,53,.4);}
+
+/* ── CHARACTER ── */
+.char-display{
+  background:white;border-radius:24px;padding:18px;box-shadow:var(--sh);
+  text-align:center;width:100%;position:relative;overflow:hidden;
+}
+.char-display::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#FF6B35,#4ECDC4,#FFD93D);}
+.char-avatar{font-size:5rem;line-height:1;display:block;margin-bottom:4px;
+  animation:charBounce 2s ease-in-out infinite;}
+@keyframes charBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.char-name-tag{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--text);}
+.char-level{font-size:.78rem;color:#888;margin-top:2px;}
+.char-costume-label{display:inline-block;background:#EFF6FF;color:#3b82f6;border-radius:50px;
+  padding:3px 12px;font-size:.72rem;font-weight:700;margin-top:6px;}
+.xp-bar-wrap{margin-top:10px;}
+.xp-label{font-size:.72rem;color:#999;text-align:right;margin-bottom:3px;}
+.xp-bg{background:#e5e7eb;border-radius:50px;height:8px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#FF6B35,#FFD93D);transition:width .6s ease;}
+
+/* ── WORLD ── */
+.wg{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--text);text-align:center;}
+.wg span{color:#FF6B35;}
+.wsub{color:#6b7280;font-size:.85rem;text-align:center;}
+.chcard{width:100%;background:white;border-radius:20px;padding:16px 18px;box-shadow:var(--sh);
+  border:3px solid transparent;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.chcard.unlocked{cursor:pointer;border-color:#4ECDC4;}
+.chcard.unlocked:hover{transform:translateY(-3px) scale(1.01);}
+.chcard.locked{opacity:.5;filter:grayscale(.4);cursor:not-allowed;}
+.chcard.completed{border-color:#22c55e;}
+.chicon{font-size:2.5rem;flex-shrink:0;}
+.chinfo{flex:1;}
+.chtitle{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--text);}
+.chdesc{font-size:.75rem;color:#888;margin-top:2px;line-height:1.4;}
+.chbadge{position:absolute;top:9px;right:11px;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:50px;}
+.chbadge.ob{background:#dcfce7;color:#16a34a;}.chbadge.lb{background:#f3f4f6;color:#9ca3af;}
+.chprog{margin-top:7px;height:5px;background:#e5e7eb;border-radius:50px;overflow:hidden;}
+.chprog-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#4ECDC4,#22c55e);transition:width .5s;}
+.echip{display:inline-flex;align-items:center;gap:5px;background:#EFF6FF;color:#3b82f6;
+  border-radius:50px;padding:3px 11px;font-size:.7rem;font-weight:700;cursor:pointer;
+  border:1.5px solid #bfdbfe;margin-top:5px;transition:background .15s;}
+.echip:hover{background:#dbeafe;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;}
+.stat-box{background:white;border-radius:12px;padding:8px 6px;text-align:center;box-shadow:var(--sh);}
+.stat-box .si{font-size:1.3rem;}.stat-box .sl{font-size:.65rem;font-weight:700;margin-top:2px;}.stat-box .sv{font-size:.85rem;font-weight:900;margin-top:1px;}
+
+/* ── LEVEL SELECT ── */
+.ltitle{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800;color:var(--text);text-align:center;}
+.lcards{display:flex;gap:11px;width:100%;justify-content:center;flex-wrap:wrap;}
+.lcard{flex:1;min-width:120px;background:white;border-radius:18px;padding:16px 9px;
+  text-align:center;box-shadow:var(--sh);border:3px solid transparent;transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.lcard.unlocked{cursor:pointer;}.lcard.unlocked:hover{transform:translateY(-5px) scale(1.04);}
+.lcard.locked{opacity:.5;filter:grayscale(.5);cursor:not-allowed;}
+.lcard.easy{border-color:#22c55e;}.lcard.medium{border-color:#f59e0b;}.lcard.hard{border-color:#ef4444;}
+.lic{font-size:2rem;margin-bottom:5px;}.lname{font-family:'Baloo 2',cursive;font-weight:800;font-size:.95rem;color:var(--text);}
+.lst{font-size:.68rem;margin-top:3px;}
+.lst.done{color:#16a34a;font-weight:700;}.lst.need{color:#f59e0b;font-weight:700;}.lst.lock{color:#9ca3af;}
+.back-btn{background:white;color:var(--text);border:2px solid #e5e7eb;border-radius:50px;
+  padding:9px 20px;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;cursor:pointer;
+  transition:transform .15s;align-self:flex-start;}
+.back-btn:hover{transform:translateY(-2px);}
+
+/* ── EDU ── */
+.edu-main-title{font-family:'Baloo 2',cursive;font-size:1.75rem;font-weight:800;color:var(--text);text-align:center;}
+.edu-main-title span{color:#FF6B35;}
+.edu-intro{background:white;border-radius:18px;padding:14px 18px;box-shadow:var(--sh);
+  font-size:.88rem;color:#444;line-height:1.7;width:100%;}
+.edu-intro strong{color:var(--text);}
+.macro-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;}
+.mcrd{background:white;border-radius:16px;padding:14px 10px;text-align:center;box-shadow:var(--sh);border-top:4px solid;}
+.mcrd.k{border-color:#FF6B35;}.mcrd.p{border-color:#4ECDC4;}.mcrd.y{border-color:#FFD93D;}
+.mcrd .mci{font-size:2rem;margin-bottom:5px;}
+.mcrd .mct{font-family:'Baloo 2',cursive;font-weight:800;font-size:.9rem;color:var(--text);}
+.mcrd .mcb{font-size:.7rem;color:#666;margin-top:3px;line-height:1.4;}
+.esect{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--text);
+  width:100%;padding-bottom:4px;border-bottom:2px solid #e5e7eb;}
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%;}
+.fitem{background:white;border-radius:12px;padding:10px 13px;box-shadow:var(--sh);display:flex;align-items:center;gap:9px;}
+.fitem .fe{font-size:1.5rem;flex-shrink:0;}
+.fitem .fn{font-weight:700;font-size:.82rem;color:var(--text);}
+.fitem .fd{font-size:.7rem;color:#888;line-height:1.3;}
+.tipbox{background:#FFF8D0;border-radius:13px;padding:13px 15px;width:100%;
+  border-left:4px solid #FFD93D;font-size:.85rem;color:#555;line-height:1.6;}
+.tipbox strong{color:var(--text);}
+.ctable{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden;box-shadow:var(--sh);}
+.ctable th{background:#FF6B35;color:white;padding:9px 12px;text-align:left;font-size:.78rem;font-family:'Baloo 2',cursive;}
+.ctable td{padding:8px 12px;font-size:.78rem;color:var(--text);border-bottom:1px solid #f3f4f6;}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:nth-child(even) td{background:#fff8f5;}
+.cbadge{display:inline-block;padding:2px 7px;border-radius:50px;font-size:.68rem;font-weight:700;}
+.low{background:#dcfce7;color:#16a34a;}.mid{background:#fef3c7;color:#d97706;}.high{background:#fee2e2;color:#dc2626;}
+
+/* ── GAME ── */
+header{text-align:center;margin-bottom:10px;width:100%;}
+header h1{font-family:'Baloo 2',cursive;font-size:1.75rem;font-weight:800;color:var(--text);}
+header h1 span{color:#FF6B35;}
+.dbadge{display:inline-block;padding:3px 13px;border-radius:50px;font-size:.76rem;font-weight:700;margin-top:2px;}
+.dbadge.easy{background:#dcfce7;color:#16a34a;}.dbadge.medium{background:#fef3c7;color:#d97706;}.dbadge.hard{background:#fee2e2;color:#dc2626;}
+.sbar{display:flex;gap:9px;margin-bottom:10px;justify-content:center;flex-wrap:wrap;width:100%;}
+.spill{background:white;border-radius:50px;padding:5px 13px;font-weight:700;font-size:.85rem;
+  color:var(--text);box-shadow:var(--sh);display:flex;align-items:center;gap:4px;}
+.pwrap{max-width:480px;width:100%;margin-bottom:9px;}
+.plabel{font-size:.74rem;color:#999;margin-bottom:3px;text-align:right;}
+.pbg{background:#e5e7eb;border-radius:50px;height:8px;overflow:hidden;}
+.pfill{height:100%;border-radius:50px;background:linear-gradient(90deg,#FF6B35,#4ECDC4);transition:width .5s;}
+.twrap{max-width:480px;width:100%;margin-bottom:7px;display:none;}
+.twrap.show{display:block;}
+.tbg{background:#e5e7eb;border-radius:50px;height:7px;overflow:hidden;}
+.tfill{height:100%;border-radius:50px;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transition:width .1s linear;}
+.tlabel{font-size:.72rem;color:#999;text-align:center;margin-top:2px;}
+.fstage{background:white;border-radius:22px;box-shadow:var(--sh);padding:18px 22px;
+  max-width:480px;width:100%;text-align:center;margin-bottom:11px;position:relative;overflow:hidden;}
+.fstage::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#FF6B35,#4ECDC4,#FFD93D);}
+.femoji{font-size:3.8rem;line-height:1;margin-bottom:6px;display:block;animation:bounce 1.2s ease infinite alternate;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-9px)}}
+.fname{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+.hbox{background:#F8F9FF;border-radius:11px;padding:8px 12px;margin-top:7px;
+  font-size:.83rem;color:#555;border-left:4px solid #4ECDC4;text-align:left;line-height:1.5;}
+.hbox.hidden{display:none;}.hbox strong{color:var(--text);}
+
+/* GI badge on food card */
+.gi-badge{display:inline-flex;align-items:center;gap:4px;border-radius:50px;padding:3px 10px;
+  font-size:.72rem;font-weight:700;margin-top:6px;}
+.gi-fast{background:#fee2e2;color:#dc2626;}.gi-mid{background:#fef3c7;color:#d97706;}.gi-slow{background:#dcfce7;color:#16a34a;}
+
+.zones{display:flex;gap:9px;max-width:520px;width:100%;justify-content:center;flex-wrap:wrap;margin-bottom:11px;}
+.zone{flex:1;min-width:108px;border-radius:17px;padding:12px 7px;text-align:center;
+  cursor:pointer;transition:all .18s cubic-bezier(.34,1.56,.64,1);border:3px dashed transparent;user-select:none;}
+.zone:hover{transform:translateY(-5px) scale(1.04);}.zone:active{transform:scale(.97);}
+.zone.karb{background:var(--karb-l);border-color:var(--karb);}
+.zone.protein{background:var(--protein-l);border-color:var(--protein);}
+.zone.yag{background:var(--yag-l);border-color:var(--yag);}
+.zic{font-size:1.9rem;margin-bottom:4px;}
+.zlabel{font-family:'Baloo 2',cursive;font-weight:800;font-size:.9rem;color:var(--text);display:block;margin-bottom:2px;}
+.zsub{font-size:.66rem;color:#888;line-height:1.3;}
+.zsub.hidden{display:none;}
+
+/* ── CARB GAME ── */
+.cgt{font-family:'Baloo 2',cursive;font-size:1.65rem;font-weight:800;color:var(--text);text-align:center;}
+.cgt span{color:#FF6B35;}
+.cgcard{background:white;border-radius:22px;box-shadow:var(--sh);padding:18px 22px;
+  max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;}
+.cgcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#FF6B35,#FFD93D);}
+.cgfe{font-size:3.8rem;display:block;margin-bottom:6px;animation:bounce 1.2s ease infinite alternate;}
+.cgfn{font-family:'Baloo 2',cursive;font-size:1.35rem;font-weight:800;color:var(--text);margin-bottom:3px;}
+.cgport{font-size:.82rem;color:#888;margin-bottom:11px;}
+.cgq{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:11px;}
+.cgopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;}
+.cgopt{background:#F8F9FF;border:2px solid #e5e7eb;border-radius:13px;padding:10px 7px;
+  text-align:center;cursor:pointer;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--text);
+  transition:all .15s cubic-bezier(.34,1.56,.64,1);}
+.cgopt:hover{transform:translateY(-3px);border-color:#FF6B35;background:#FFE0D0;}
+.cgopt.cok{background:#dcfce7;border-color:#22c55e;color:#16a34a;}
+.cgopt.cno{background:#fee2e2;border-color:#ef4444;color:#dc2626;}
+.cgtip{background:#FFF8D0;border-radius:11px;padding:9px 13px;margin-top:9px;
+  font-size:.8rem;color:#555;border-left:4px solid #FFD93D;text-align:left;line-height:1.5;display:none;}
+.cgtip.show{display:block;}
+
+/* ── HYPO MODE ── */
+#hypoScreen{background:white;}
+.hypo-alert{background:linear-gradient(135deg,#fee2e2,#fecaca);border-radius:20px;
+  padding:20px;width:100%;text-align:center;border:3px solid #ef4444;box-shadow:var(--sh);}
+.hypo-alert .ha-emoji{font-size:3.5rem;display:block;margin-bottom:8px;animation:pulse 1s ease-in-out infinite alternate;}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.1)}}
+.hypo-alert .ha-title{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800;color:#dc2626;margin-bottom:6px;}
+.hypo-alert .ha-sub{font-size:.88rem;color:#7f1d1d;line-height:1.5;}
+.hypo-foods{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.hfood{background:white;border-radius:16px;padding:14px 10px;text-align:center;
+  box-shadow:var(--sh);border:3px solid #e5e7eb;cursor:pointer;
+  transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.hfood:hover{transform:translateY(-4px) scale(1.03);}
+.hfood .hfe{font-size:2.5rem;display:block;margin-bottom:5px;}
+.hfood .hfn{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:800;color:var(--text);}
+.hfood .hfd{font-size:.68rem;color:#888;margin-top:2px;line-height:1.3;}
+.hypo-result{background:white;border-radius:20px;padding:20px;width:100%;text-align:center;box-shadow:var(--sh);display:none;}
+.hypo-result.show{display:block;}
+.hypo-result .hr-emoji{font-size:3rem;display:block;margin-bottom:8px;}
+.hypo-result .hr-title{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+.hypo-result .hr-title.good{color:#16a34a;}.hypo-result .hr-title.bad{color:#dc2626;}
+.hypo-result .hr-text{font-size:.85rem;color:#555;line-height:1.6;margin-bottom:14px;}
+.timer-15{display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0;}
+.timer-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#FFD93D);
+  display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;
+  font-size:1.6rem;font-weight:800;color:white;box-shadow:0 4px 16px rgba(255,107,53,.4);
+  animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.timer-label-15{font-size:.8rem;color:#888;font-weight:700;}
+
+/* ── PLATE GAME ── */
+#plateScreen{}
+.plate-title{font-family:'Baloo 2',cursive;font-size:1.65rem;font-weight:800;color:var(--text);text-align:center;}
+.plate-title span{color:#4ECDC4;}
+.plate-q{background:white;border-radius:18px;padding:16px 20px;box-shadow:var(--sh);
+  width:100%;text-align:center;}
+.plate-q .pq-emoji{font-size:3rem;display:block;margin-bottom:6px;}
+.plate-q .pq-food{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+.plate-q .pq-q{font-size:.88rem;color:#555;line-height:1.5;}
+.pair-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.pair-opt{background:white;border-radius:16px;padding:13px 10px;text-align:center;
+  box-shadow:var(--sh);border:3px solid #e5e7eb;cursor:pointer;
+  transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.pair-opt:hover{transform:translateY(-4px);border-color:#4ECDC4;}
+.pair-opt .po-emoji{font-size:2.2rem;display:block;margin-bottom:4px;}
+.pair-opt .po-name{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:800;color:var(--text);}
+.pair-opt .po-desc{font-size:.68rem;color:#888;margin-top:2px;line-height:1.3;}
+.pair-opt.pok{background:#dcfce7;border-color:#22c55e;}
+.pair-opt.pno{background:#fee2e2;border-color:#ef4444;}
+
+/* ── EXERCISE CARDS ── */
+#exScreen{}
+.ex-title{font-family:'Baloo 2',cursive;font-size:1.65rem;font-weight:800;color:var(--text);text-align:center;}
+.ex-title span{color:#f59e0b;}
+.ex-card{background:white;border-radius:20px;padding:20px;box-shadow:var(--sh);width:100%;text-align:center;}
+.ex-card .exc-emoji{font-size:3.5rem;display:block;margin-bottom:8px;}
+.ex-card .exc-title{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:6px;}
+.ex-card .exc-scenario{font-size:.88rem;color:#555;line-height:1.6;margin-bottom:14px;}
+.ex-opts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.ex-opt{background:#F8F9FF;border:2px solid #e5e7eb;border-radius:14px;padding:12px 16px;
+  text-align:left;cursor:pointer;font-size:.85rem;color:var(--text);
+  display:flex;align-items:center;gap:10px;transition:all .15s cubic-bezier(.34,1.56,.64,1);}
+.ex-opt:hover{border-color:#f59e0b;background:#fef3c7;}
+.ex-opt .eo-emoji{font-size:1.5rem;flex-shrink:0;}
+.ex-opt.eok{background:#dcfce7;border-color:#22c55e;}
+.ex-opt.eno{background:#fee2e2;border-color:#ef4444;}
+.ex-result{background:white;border-radius:18px;padding:18px;box-shadow:var(--sh);width:100%;display:none;}
+.ex-result.show{display:block;}
+
+/* ── COSTUME UNLOCK ── */
+.costume-unlock{background:linear-gradient(135deg,#2D3561,#4a3d8c);border-radius:24px;
+  padding:28px;text-align:center;width:100%;color:white;box-shadow:0 12px 40px rgba(45,53,97,.3);}
+.cu-stars{font-size:1.4rem;letter-spacing:6px;margin-bottom:12px;}
+.cu-new{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#FFD93D;margin-bottom:8px;}
+.cu-avatar{font-size:5rem;display:block;margin-bottom:8px;animation:charBounce 2s ease-in-out infinite;}
+.cu-name{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+.cu-desc{font-size:.85rem;color:#c4b5fd;line-height:1.5;}
+
+/* ── FEEDBACK / UNLOCK OVERLAYS ── */
+.fov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .3s;}
+.fov.show{opacity:1;pointer-events:all;}
+.fcrd{background:white;border-radius:26px;padding:28px 32px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);max-width:320px;width:90%;
+  animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.fe2{font-size:3.5rem;margin-bottom:7px;display:block;}
+.ft{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;margin-bottom:7px;}
+.ft.correct{color:#22c55e;}.ft.wrong{color:#ef4444;}
+.ftxt{font-size:.87rem;color:#555;margin-bottom:15px;line-height:1.5;}
+.nxtbtn{background:linear-gradient(135deg,#4ECDC4,#2eb5ac);color:white;border:none;
+  border-radius:50px;padding:10px 26px;font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;
+  cursor:pointer;box-shadow:0 4px 15px rgba(78,205,196,.4);transition:transform .15s;}
+.nxtbtn:hover{transform:translateY(-2px);}
+.uov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:200;background:rgba(45,53,97,.8);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .4s;}
+.uov.show{opacity:1;pointer-events:all;}
+.ucrd{background:white;border-radius:28px;padding:32px 36px;text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.25);max-width:320px;width:90%;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+.uemi{font-size:4.5rem;display:block;margin-bottom:9px;}
+.utit{font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:5px;}
+.usub{font-size:.87rem;color:#555;margin-bottom:17px;line-height:1.5;}
+.ubtn{background:linear-gradient(135deg,#FF6B35,#ff4500);color:white;border:none;border-radius:50px;
+  padding:11px 30px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 15px rgba(255,107,53,.4);transition:transform .15s;}
+.ubtn:hover{transform:translateY(-2px);}
+
+/* ── END CARD ── */
+.endscr{display:none;flex-direction:column;align-items:center;text-align:center;gap:13px;max-width:420px;width:100%;}
+.endscr.show{display:flex;}
+.ecrd{background:white;border-radius:24px;padding:24px;box-shadow:var(--sh);width:100%;}
+.eemi{font-size:3.8rem;display:block;margin-bottom:7px;}
+.etit{font-family:'Baloo 2',cursive;font-size:1.65rem;font-weight:800;color:var(--text);margin-bottom:5px;}
+.escr{font-size:2.3rem;font-weight:900;color:#FF6B35;font-family:'Baloo 2',cursive;}
+.emsg{color:#555;font-size:.85rem;line-height:1.5;margin-top:6px;}
+.stars{font-size:1.6rem;letter-spacing:4px;margin:5px 0;}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;}
+.sbtn{border:none;border-radius:50px;padding:10px 22px;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .15s;}
+.sbtn:hover{transform:translateY(-2px);}
+.sbtn.or{background:linear-gradient(135deg,#FF6B35,#ff4500);color:white;box-shadow:0 4px 15px rgba(255,107,53,.4);}
+.sbtn.gr{background:white;color:var(--text);border:2px solid #e5e7eb;}
+
+/* ── AI COACH ── */
+.aiov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  z-index:300;background:rgba(45,53,97,.7);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s;}
+.aiov.show{opacity:1;pointer-events:all;}
+.aicrd{background:white;border-radius:28px 28px 0 0;padding:20px 18px 16px;width:100%;max-width:540px;
+  max-height:88vh;display:flex;flex-direction:column;gap:11px;
+  box-shadow:0 -8px 40px rgba(45,53,97,.2);
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.2,.64,1);}
+.aiov.show .aicrd{transform:translateY(0);}
+.ai-header{display:flex;align-items:center;gap:11px;}
+.ai-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--text);}
+.ai-sub{font-size:.72rem;color:#888;}
+.ai-close{margin-left:auto;background:#f3f4f6;border:none;border-radius:50%;width:32px;height:32px;
+  cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:#888;transition:background .15s;}
+.ai-close:hover{background:#e5e7eb;}
+.ai-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;min-height:160px;max-height:340px;padding-right:4px;}
+.ai-msg{display:flex;align-items:flex-start;gap:8px;}
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-avatar{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+.ai-bubble{background:#F0F7FF;border-radius:16px 16px 16px 4px;padding:9px 13px;font-size:.85rem;color:var(--text);line-height:1.6;max-width:82%;}
+.ai-msg.user .ai-bubble{background:linear-gradient(135deg,#4ECDC4,#2eb5ac);color:white;border-radius:16px 16px 4px 16px;}
+.ai-bubble.loading{display:flex;gap:5px;align-items:center;padding:12px 16px;}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:#4ECDC4;animation:dotBounce .9s ease-in-out infinite;}
+.ai-dot:nth-child(2){animation-delay:.15s;}.ai-dot:nth-child(3){animation-delay:.3s;}
+@keyframes dotBounce{0%,80%,100%{transform:scale(0.6);opacity:.5}40%{transform:scale(1);opacity:1}}
+.ai-input-row{display:flex;gap:8px;}
+.ai-input{flex:1;padding:10px 16px;border-radius:50px;border:2px solid #e5e7eb;font-family:'Nunito',sans-serif;
+  font-size:.9rem;color:var(--text);outline:none;background:#f9fafb;transition:border-color .2s;}
+.ai-input:focus{border-color:#4ECDC4;background:white;}
+.ai-send{background:linear-gradient(135deg,#4ECDC4,#2eb5ac);color:white;border:none;border-radius:50%;
+  width:42px;height:42px;font-size:1.1rem;cursor:pointer;flex-shrink:0;transition:transform .15s;}
+.ai-send:hover{transform:scale(1.08);}
+.ai-send:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.ai-quick-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.ai-quick-btns button{background:#EFF6FF;color:#3b82f6;border:1.5px solid #bfdbfe;border-radius:50px;
+  padding:5px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .15s;}
+.ai-quick-btns button:hover{background:#dbeafe;}
+</style>
+</head>
+<body>
+
+<div class="fbar">
+  <button class="ibt" id="soundBtn" onclick="toggleSound()">🔊</button>
+  <button class="ibt" id="homeBtn" onclick="goWorld()" style="display:none">🏠</button>
+  <button class="ibt" id="eduBtn" onclick="openEdu()" style="display:none">📖</button>
+  <button class="ibt" id="aiCoachBtn" onclick="openAICoach()" title="AI Koç">🤖</button>
+</div>
+<div class="streak" id="streak">🔥 <span id="streakCount">0</span></div>
+
+<!-- ══ NAME ══ -->
+<div class="screen active" id="nameScreen">
+  <div style="font-size:4.5rem">🦸</div>
+  <div class="nh">Makro <span>Kahraman!</span></div>
+  <div class="nsub">Diyabetini anlayan bir kahraman ol!<br>Besinleri tanı, sağlıklı yaşa. 💙</div>
+  <input class="ni" id="pni" type="text" placeholder="Adını yaz..." maxlength="20"
+    onkeydown="if(event.key==='Enter')saveName()">
+  <button class="bbtn" onclick="saveName()">Başla! 🚀</button>
+  <div id="savedMsg" style="font-size:.8rem;color:#4ECDC4;font-weight:700;display:none">✅ Kayıtlı oyun bulundu!</div>
+</div>
+
+<!-- ══ WORLD ══ -->
+<div class="screen" id="worldScreen">
+  <div class="wg">Merhaba, <span id="greetName">Kahraman</span>! 👋</div>
+  <div class="wsub">Hangi bölümü oynamak istiyorsun?</div>
+
+  <!-- Character card -->
+  <div class="char-display">
+    <span class="char-avatar" id="charAvatar">🦸</span>
+    <div class="char-name-tag" id="charNameTag">Kahraman</div>
+    <div class="char-level" id="charLevel">Seviye 1 — Çaylak</div>
+    <div class="char-costume-label" id="charCostume">👕 Başlangıç Kıyafeti</div>
+    <div class="xp-bar-wrap">
+      <div class="xp-label">XP: <span id="xpVal">0</span> / <span id="xpMax">200</span></div>
+      <div class="xp-bg"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="chcard unlocked" id="ch1Card" onclick="openChapter(1)">
+    <div class="chicon">🧠</div>
+    <div class="chinfo">
+      <div class="chtitle">Bölüm 1 — Makro Grupları</div>
+      <div class="chdesc">Besinleri karbonhidrat, protein ve yağ grubuna yerleştir
+        <br><span style="color:#f59e0b;font-size:.7rem;font-weight:700">Kolay:100p · Orta:150p · Zor:200p</span></div>
+      <div class="chprog"><div class="chprog-fill" id="ch1pf" style="width:0%"></div></div>
+      <div class="echip" onclick="event.stopPropagation();openEduPage(1)">📖 Eğitim Sayfası</div>
+    </div>
+    <div class="chbadge ob" id="ch1Badge">Oyna</div>
+  </div>
+
+  <div class="chcard locked" id="ch2Card">
+    <div class="chicon">🍽️</div>
+    <div class="chinfo">
+      <div class="chtitle">Bölüm 2 — Karbonhidrat Sayımı</div>
+      <div class="chdesc">Porsiyonlardaki karbonhidrat gramını tahmin et
+        <br><span id="ch2LockDesc" style="color:#9ca3af;font-size:.7rem;font-weight:700">Bölüm 1'i tamamla → Açılır</span></div>
+      <div class="echip" id="ch2EduChip" style="display:none" onclick="event.stopPropagation();openEduPage(2)">📖 Eğitim Sayfası</div>
+    </div>
+    <div class="chbadge lb" id="ch2Badge">🔒 Kilitli</div>
+  </div>
+
+  <div class="chcard locked" id="ch3Card">
+    <div class="chicon">🚨</div>
+    <div class="chinfo">
+      <div class="chtitle">Bölüm 3 — Hipoglisemi Kahramanı</div>
+      <div class="chdesc">Kan şekeri düştüğünde ne yapacaksını öğren!
+        <br><span id="ch3LockDesc" style="color:#9ca3af;font-size:.7rem;font-weight:700">Bölüm 2'yi tamamla → Açılır</span></div>
+    </div>
+    <div class="chbadge lb" id="ch3Badge">🔒 Kilitli</div>
+  </div>
+
+  <div class="chcard locked" id="ch4Card">
+    <div class="chicon">🥗</div>
+    <div class="chinfo">
+      <div class="chtitle">Bölüm 4 — Tabağını Oluştur</div>
+      <div class="chdesc">Doğru besin kombinasyonlarını keşfet!
+        <br><span id="ch4LockDesc" style="color:#9ca3af;font-size:.7rem;font-weight:700">Bölüm 3'ü tamamla → Açılır</span></div>
+    </div>
+    <div class="chbadge lb" id="ch4Badge">🔒 Kilitli</div>
+  </div>
+
+  <div class="chcard locked" id="ch5Card">
+    <div class="chicon">🏃</div>
+    <div class="chinfo">
+      <div class="chtitle">Bölüm 5 — Egzersiz & İnsülin</div>
+      <div class="chdesc">Aktivite ve kan şekeri ilişkisini öğren!
+        <br><span id="ch5LockDesc" style="color:#9ca3af;font-size:.7rem;font-weight:700">Bölüm 4'ü tamamla → Açılır</span></div>
+    </div>
+    <div class="chbadge lb" id="ch5Badge">🔒 Kilitli</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-box"><div class="si">🌱</div><div class="sl" style="color:#16a34a">Kolay</div><div class="sv" style="color:#16a34a" id="stE">—</div></div>
+    <div class="stat-box"><div class="si">⚡</div><div class="sl" style="color:#d97706">Orta</div><div class="sv" style="color:#d97706" id="stM">—</div></div>
+    <div class="stat-box"><div class="si">🔥</div><div class="sl" style="color:#dc2626">Zor</div><div class="sv" style="color:#dc2626" id="stH">—</div></div>
+    <div class="stat-box"><div class="si">⭐</div><div class="sl" style="color:#f59e0b">Toplam XP</div><div class="sv" style="color:#f59e0b" id="stXP">0</div></div>
+  </div>
+</div>
+
+<!-- ══ LEVEL SELECT ══ -->
+<div class="screen" id="levelScreen">
+  <button class="back-btn" onclick="goWorld()">← Harita</button>
+  <div class="ltitle">🧠 Bölüm 1 — Seviye</div>
+  <div class="lcards">
+    <div class="lcard easy" id="lvlE" onclick="tryLevel('easy')">
+      <div class="lic">🌱</div><div class="lname">Kolay</div>
+      <div class="lst" id="stEasy">Hedef: 100p</div>
+    </div>
+    <div class="lcard medium locked" id="lvlM" onclick="tryLevel('medium')">
+      <div class="lic">⚡</div><div class="lname">Orta</div>
+      <div class="lst lock" id="stMed">🔒 Kolay'ı geç</div>
+    </div>
+    <div class="lcard hard locked" id="lvlH" onclick="tryLevel('hard')">
+      <div class="lic">🔥</div><div class="lname">Zor</div>
+      <div class="lst lock" id="stHard">🔒 Orta'yı geç</div>
+    </div>
+  </div>
+  <button class="back-btn" style="align-self:center;background:#EFF6FF;border-color:#bfdbfe;color:#3b82f6"
+    onclick="openEduPage(1)">📖 Eğitim Sayfasına Bak</button>
+</div>
+
+<!-- ══ EDU ══ -->
+<div class="screen" id="eduScreen">
+  <div id="eduContent"></div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="screen" id="gameScreen">
+  <header><h1>🦸 Makro <span>Kahraman!</span></h1>
+    <div class="dbadge" id="diffBadge">Kolay</div></header>
+  <div class="sbar">
+    <div class="spill">⭐ <span id="score">0</span></div>
+    <div class="spill">🎯 <span id="targetScore">100</span></div>
+    <div class="spill">❤️ <span id="lives">5</span></div>
+    <div class="spill">⚡ <span id="gameXP">+0 XP</span></div>
+  </div>
+  <div class="pwrap">
+    <div class="plabel"><span id="qNum">1</span>/<span id="qTotal">15</span></div>
+    <div class="pbg"><div class="pfill" id="pFill" style="width:7%"></div></div>
+  </div>
+  <div class="twrap" id="timerWrap">
+    <div class="tbg"><div class="tfill" id="tFill" style="width:100%"></div></div>
+    <div class="tlabel">⏱️ <span id="tLabel">10</span>s</div>
+  </div>
+  <div style="width:100%;display:flex;flex-direction:column;align-items:center">
+    <div class="fstage">
+      <span class="femoji" id="fEmoji">🥩</span>
+      <div class="fname" id="fName">...</div>
+      <div id="giBadge" style="display:none"></div>
+      <div class="hbox" id="hBox">💡 ...</div>
+    </div>
+    <div class="zones">
+      <div class="zone karb" onclick="checkAns('karbonhidrat')">
+        <div class="zic">🍞</div><span class="zlabel">Karbonhidrat</span>
+        <span class="zsub" id="zsk">Enerji kaynağı<br>Tahıl, meyve</span>
+      </div>
+      <div class="zone protein" onclick="checkAns('protein')">
+        <div class="zic">💪</div><span class="zlabel">Protein</span>
+        <span class="zsub" id="zsp">Kas yapıcı<br>Et, yumurta</span>
+      </div>
+      <div class="zone yag" onclick="checkAns('yag')">
+        <div class="zic">🫒</div><span class="zlabel">Yağ</span>
+        <span class="zsub" id="zsy">Depo enerji<br>Yağlar, fındık</span>
+      </div>
+    </div>
+  </div>
+  <div class="endscr" id="endScreen">
+    <div class="ecrd">
+      <span class="eemi" id="eEmi">🏆</span><div class="etit" id="eTit">Tebrikler!</div>
+      <div class="stars" id="eStars">⭐⭐⭐</div><div class="escr" id="eScr">0 Puan</div>
+      <div class="emsg" id="eMsg"></div>
+    </div>
+    <div class="btnrow">
+      <button class="sbtn or" onclick="restartLvl()">🔄 Tekrar</button>
+      <button class="sbtn gr" onclick="goWorld()">🏠 Harita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CARB SCREEN ══ -->
+<div class="screen" id="carbScreen">
+  <div class="cgt">🍽️ Karbonhidrat <span>Sayımı</span></div>
+  <div class="sbar">
+    <div class="spill">⭐ <span id="cScore">0</span></div>
+    <div class="spill">❤️ <span id="cLives">3</span></div>
+    <div class="spill">📊 <span id="cQN">1</span>/<span id="cQT">20</span></div>
+  </div>
+  <div class="pwrap"><div class="pbg"><div class="pfill" id="cPFill" style="width:5%"></div></div></div>
+  <div class="cgcard">
+    <span class="cgfe" id="cEmoji">🍚</span>
+    <div class="cgfn" id="cFN">...</div>
+    <div class="cgport" id="cPort">...</div>
+    <div class="cgq">Bu porsiyonda kaç gram karbonhidrat var?</div>
+    <div class="cgopts" id="cOpts"></div>
+    <div class="cgtip" id="cTip"></div>
+  </div>
+  <div class="endscr" id="carbEnd">
+    <div class="ecrd">
+      <span class="eemi" id="ceEmi">🏆</span><div class="etit" id="ceTit">Harika!</div>
+      <div class="stars" id="ceStars">⭐⭐⭐</div><div class="escr" id="ceScr">0</div>
+      <div class="emsg" id="ceMsg"></div>
+    </div>
+    <div class="btnrow">
+      <button class="sbtn or" onclick="startCarb()">🔄 Tekrar</button>
+      <button class="sbtn gr" onclick="goWorld()">🏠 Harita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HYPO SCREEN ══ -->
+<div class="screen" id="hypoScreen">
+  <div style="font-family:'Baloo 2',cursive;font-size:1.65rem;font-weight:800;color:#dc2626;text-align:center">🚨 Hipoglisemi <span style="color:var(--text)">Kahramanı!</span></div>
+  <div class="hypo-alert" id="hypoAlert">
+    <span class="ha-emoji">⚠️</span>
+    <div class="ha-title">Kan Şekerin Düşüyor!</div>
+    <div class="ha-sub" id="hypoScenario">Kan şekerin 70'in altına düştü. Nasıl hissediyorsun: titreme, terleme, açlık. Hızlıca ne yersin?</div>
+  </div>
+  <div style="font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;color:var(--text);width:100%">Ne seçersin?</div>
+  <div class="hypo-foods" id="hypoFoods"></div>
+  <div class="hypo-result" id="hypoResult">
+    <span class="hr-emoji" id="hrEmoji">✅</span>
+    <div class="hr-title" id="hrTitle">Doğru!</div>
+    <div class="hr-text" id="hrText"></div>
+    <div class="timer-15" id="timer15" style="display:none">
+      <div class="timer-circle" id="timerCircle">15</div>
+      <div class="timer-label-15">dakika bekle, tekrar ölç!</div>
+    </div>
+    <button class="nxtbtn" onclick="nextHypo()">Devam →</button>
+  </div>
+  <div class="sbar" style="margin-top:4px">
+    <div class="spill">⭐ <span id="hScore">0</span></div>
+    <div class="spill">📊 <span id="hQN">1</span>/<span id="hQT">5</span></div>
+  </div>
+  <div class="endscr" id="hypoEnd">
+    <div class="ecrd">
+      <span class="eemi" id="heEmi">🏆</span><div class="etit" id="heTit">Hipoglisemi Uzmanı!</div>
+      <div class="stars" id="heStars">⭐⭐⭐</div><div class="escr" id="heScr">0</div>
+      <div class="emsg" id="heMsg"></div>
+    </div>
+    <div class="btnrow">
+      <button class="sbtn or" onclick="startHypo()">🔄 Tekrar</button>
+      <button class="sbtn gr" onclick="goWorld()">🏠 Harita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PLATE SCREEN ══ -->
+<div class="screen" id="plateScreen">
+  <div class="plate-title">🥗 Tabağını <span>Oluştur!</span></div>
+  <div class="sbar">
+    <div class="spill">⭐ <span id="plScore">0</span></div>
+    <div class="spill">📊 <span id="plQN">1</span>/<span id="plQT">6</span></div>
+  </div>
+  <div class="pwrap"><div class="pbg"><div class="pfill" id="plPFill" style="width:16%"></div></div></div>
+  <div class="plate-q">
+    <span class="pq-emoji" id="plEmoji">🍎</span>
+    <div class="pq-food" id="plFood">Elma yiyeceksin</div>
+    <div class="pq-q" id="plQ">Kan şekerinin daha yavaş yükselmesi için yanına ne eklersin?</div>
+  </div>
+  <div class="pair-options" id="plOpts"></div>
+  <div class="hbox" id="plFeedback" style="display:none;margin-top:4px"></div>
+  <div class="endscr" id="plateEnd">
+    <div class="ecrd">
+      <span class="eemi" id="peEmi">🥗</span><div class="etit" id="peTit">Tabak Uzmanı!</div>
+      <div class="stars" id="peStars">⭐⭐⭐</div><div class="escr" id="peScr">0</div>
+      <div class="emsg" id="peMsg"></div>
+    </div>
+    <div class="btnrow">
+      <button class="sbtn or" onclick="startPlate()">🔄 Tekrar</button>
+      <button class="sbtn gr" onclick="goWorld()">🏠 Harita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE SCREEN ══ -->
+<div class="screen" id="exScreen">
+  <div class="ex-title">🏃 Egzersiz & <span>İnsülin</span></div>
+  <div class="sbar">
+    <div class="spill">⭐ <span id="exScore">0</span></div>
+    <div class="spill">📊 <span id="exQN">1</span>/<span id="exQT">5</span></div>
+  </div>
+  <div class="ex-card">
+    <span class="exc-emoji" id="exEmoji">⚽</span>
+    <div class="exc-title" id="exTitle">Futbol maçına gidiyorsun!</div>
+    <div class="exc-scenario" id="exScenario">Bugün 2 saatlik futbol maçın var. Maçtan önce kan şekerini ölçtün: 120 mg/dL. Ne yapmalısın?</div>
+  </div>
+  <div class="ex-opts" id="exOpts"></div>
+  <div class="hbox" id="exFeedback" style="display:none;margin-top:4px"></div>
+  <div class="endscr" id="exEnd">
+    <div class="ecrd">
+      <span class="eemi" id="eeEmi">🏃</span><div class="etit" id="eeTit">Egzersiz Uzmanı!</div>
+      <div class="stars" id="eeStars">⭐⭐⭐</div><div class="escr" id="eeScr">0</div>
+      <div class="emsg" id="eeMsg"></div>
+    </div>
+    <div class="btnrow">
+      <button class="sbtn or" onclick="startEx()">🔄 Tekrar</button>
+      <button class="sbtn gr" onclick="goWorld()">🏠 Harita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── AI COACH OVERLAY ── -->
+<div class="aiov" id="aiov">
+  <div class="aicrd">
+    <div class="ai-header">
+      <span style="font-size:2rem">🤖</span>
+      <div>
+        <div class="ai-title">Makro Koç</div>
+        <div class="ai-sub">Sana özel AI desteği</div>
+      </div>
+      <button class="ai-close" onclick="closeAICoach()">✕</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg bot">
+        <span class="ai-avatar">🤖</span>
+        <div class="ai-bubble">Merhaba! Ben Makro Koç 👋 Makrolar, diyabet, kan şekeri veya oyun hakkında aklına takılan her şeyi bana sorabilirsin!</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="aiInput" type="text" placeholder="Soru sor..." maxlength="200"
+        onkeydown="if(event.key==='Enter')sendAIMsg()">
+      <button class="ai-send" id="aiSend" onclick="sendAIMsg()">➤</button>
+    </div>
+    <div class="ai-quick-btns" id="aiQuickBtns">
+      <button onclick="askQuick('Kan şekeri neden önemli?')">🩸 Kan şekeri</button>
+      <button onclick="askQuick('Glisemik indeks ne demek?')">📊 Gİ nedir?</button>
+      <button onclick="askQuick('Hipoglisemide ne yapmalıyım?')">🚨 Hipoglisemi</button>
+      <button onclick="askQuick('Karbonhidrat sayımı nasıl yapılır?')">🍽️ Karb sayımı</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEEDBACK ── -->
+<div class="fov" id="fov">
+  <div class="fcrd">
+    <span class="fe2" id="fEmo">✅</span>
+    <div class="ft" id="fTit">Doğru!</div>
+    <div class="ftxt" id="fTxt"></div>
+    <button class="nxtbtn" id="fNxt" onclick="nextQ()">Devam →</button>
+  </div>
+</div>
+<!-- ── UNLOCK ── -->
+<div class="uov" id="uov">
+  <div class="ucrd">
+    <span class="uemi" id="uEmi">🎉</span>
+    <div class="utit" id="uTit">Açıldı!</div>
+    <div class="usub" id="uSub"></div>
+    <button class="ubtn" onclick="dismissUnlock()">Harika! →</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  COSTUMES (Karakter Gelişimi)
+// ══════════════════════════════════════════
+const COSTUMES = [
+  {minXP:0,   avatar:'🧒', name:'Çaylak',        label:'👕 Başlangıç Kıyafeti', desc:'Henüz yeni başladın!'},
+  {minXP:200, avatar:'🧑‍🍳',name:'Mutfak Çırağı', label:'👨‍🍳 Mutfak Önlüğü',    desc:'Besinleri tanımaya başladın!'},
+  {minXP:500, avatar:'🧑‍🔬',name:'Besin Dedektifi',label:'🔬 Laboratuvar Önlüğü',desc:'Makroları anlıyorsun!'},
+  {minXP:900, avatar:'🧑‍⚕️',name:'Sağlık Öğrencisi',label:'🩺 Stetoskop',       desc:'Karbonhidrat sayımı ustası!'},
+  {minXP:1400,avatar:'🦸', name:'Makro Kahraman', label:'🦸 Kahraman Pelerini',  desc:'Hipoglisemi kahramanısın!'},
+  {minXP:2000,avatar:'🏆', name:'Diyabet Ustası', label:'🏆 Şampiyonluk Kupaı',  desc:'Tüm bölümleri tamamladın!'},
+];
+
+function getCostume(xp){
+  let c=COSTUMES[0];
+  for(const co of COSTUMES){if(xp>=co.minXP)c=co;}
+  return c;
+}
+
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const allFoods=[
+  {name:"Pirzola",emoji:"🥩",answer:"protein",gi:null,hint:"Kasaptan alınan et — kaslarını güçlendirir.",hintShort:"Hayvansal et ürünü.",explanation:"Pirzola bir et ürünüdür. Etler <strong>protein</strong> açısından çok zengindir! 💪"},
+  {name:"Yumurta",emoji:"🥚",answer:"protein",gi:null,hint:"Beyazında kas yapıcı madde çok fazla!",hintShort:"Beyazı kas yapıcı madde.",explanation:"Yumurta mükemmel bir <strong>protein</strong> kaynağıdır! 🏋️"},
+  {name:"Tavuk Göğsü",emoji:"🍗",answer:"protein",gi:null,hint:"Az yağlı, çok protein içeren beyaz et.",hintShort:"Az yağlı beyaz et.",explanation:"Tavuk göğsü mükemmel bir <strong>protein</strong> kaynağıdır. Diyabetliler için ideal! 🏅"},
+  {name:"Ton Balığı",emoji:"🐟",answer:"protein",gi:null,hint:"Az yağlı, çok besleyici deniz ürünü.",hintShort:"Balık, az yağlı.",explanation:"Ton balığı mükemmel bir <strong>protein</strong> kaynağıdır. Omega-3 de içerir! 🌊"},
+  {name:"Mercimek",emoji:"🫘",answer:"protein",gi:null,hint:"Kışın içtiğimiz lezzetli çorba! Bitkisel protein deposu.",hintShort:"Bitkisel baklagil.",explanation:"Mercimek bitkisel <strong>protein</strong> açısından zengindir. Lif içeriği kan şekerini dengeler! 🌱"},
+  {name:"Nohut",emoji:"🟡",answer:"protein",gi:null,hint:"Humus yapımında kullanılan sarımsı baklagil.",hintShort:"Baklagil.",explanation:"Nohut <strong>protein</strong> ve lif açısından zengindir! 💛"},
+  {name:"Kuru Fasulye",emoji:"🫘",answer:"protein",gi:null,hint:"Cumartesi yemeği! Bitkisel protein deposu.",hintShort:"Baklagil.",explanation:"Kuru fasulye bitkisel <strong>protein</strong> ve lif açısından zengindir! 🌿"},
+  {name:"Süt",emoji:"🥛",answer:"protein",gi:null,hint:"Her gün içilen beyaz içecek, kalsiyum içerir.",hintShort:"Hayvansal içecek.",explanation:"Süt önemli bir <strong>protein</strong> kaynağıdır. Kalsiyum ile kemik sağlığını destekler! 🦴"},
+  {name:"Peynir",emoji:"🧀",answer:"protein",gi:null,hint:"Sütten yapılan, kalsiyum ve protein içeren besin.",hintShort:"Süt ürünü.",explanation:"Peynir önemli bir <strong>protein</strong> kaynağıdır! 🧀"},
+  {name:"Yoğurt",emoji:"🥣",answer:"protein",gi:null,hint:"Sütten yapılan, probiyotik içeren beyaz besin.",hintShort:"Süt ürünü, probiyotik.",explanation:"Yoğurt hem <strong>protein</strong> hem probiyotik içerir! 🦠"},
+  {name:"Somon",emoji:"🐠",answer:"protein",gi:null,hint:"Turuncu etli bu balık hem protein hem omega-3 içerir.",hintShort:"Yağlı balık.",explanation:"Somon hem <strong>protein</strong> hem omega-3 açısından zengindir! 🌊"},
+  {name:"Hindi",emoji:"🦃",answer:"protein",gi:null,hint:"Az yağlı kümes hayvanı eti.",hintShort:"Az yağlı kümes hayvanı.",explanation:"Hindi eti az yağlı ve yüksek <strong>protein</strong> içeriklidir! 🍽️"},
+  {name:"Bezelye",emoji:"🟢",answer:"protein",gi:null,hint:"Yeşil renkli bu baklagil hem protein hem lif içerir.",hintShort:"Yeşil baklagil.",explanation:"Bezelye bitkisel <strong>protein</strong> ve lif açısından zengindir! 🌱"},
+  {name:"Kıyma",emoji:"🥩",answer:"protein",gi:null,hint:"Kırmızı etten yapılan, küçük parçalar halinde et.",hintShort:"Kırmızı et ürünü.",explanation:"Kıyma önemli bir <strong>protein</strong> kaynağıdır! 💪"},
+  // KARBONHIDRAT
+  {name:"Ekmek",emoji:"🍞",answer:"karbonhidrat",gi:"mid",hint:"Her sabah kahvaltıda yediğimiz, tahıldan yapılan besin.",hintShort:"Tahıldan yapılır.",explanation:"Ekmek başlıca <strong>karbonhidrat</strong> kaynağıdır. 🔋<br><span style='color:#d97706;font-size:.8rem'>🟡 Orta hızda kan şekerini yükseltir</span>"},
+  {name:"Pirinç",emoji:"🍚",answer:"karbonhidrat",gi:"fast",hint:"Pilav olarak yediğimiz bu besin vücuda enerji verir.",hintShort:"Tahıl, pilav.",explanation:"Pirinç yüksek <strong>karbonhidrat</strong> içerir. 📏<br><span style='color:#dc2626;font-size:.8rem'>🔴 Hızlı kan şekerini yükseltir!</span>"},
+  {name:"Makarna",emoji:"🍝",answer:"karbonhidrat",gi:"mid",hint:"Undan yapılan, çok enerji veren yemek.",hintShort:"Undan yapılır.",explanation:"Makarna yüksek <strong>karbonhidrat</strong> kaynağıdır. 🍝<br><span style='color:#d97706;font-size:.8rem'>🟡 Orta hızda kan şekerini yükseltir</span>"},
+  {name:"Muz",emoji:"🍌",answer:"karbonhidrat",gi:"mid",hint:"Sarı meyve, doğal şeker içerir.",hintShort:"Meyve, doğal şeker.",explanation:"Muz yüksek <strong>karbonhidrat</strong> içerir. 🍌<br><span style='color:#d97706;font-size:.8rem'>🟡 Orta hızda kan şekerini yükseltir</span>"},
+  {name:"Elma",emoji:"🍎",answer:"karbonhidrat",gi:"slow",hint:"Doğal şeker ve lif içeren kırmızı/yeşil meyve.",hintShort:"Meyve, lifli.",explanation:"Elma doğal <strong>karbonhidrat</strong> içerir. 🍎<br><span style='color:#16a34a;font-size:.8rem'>🟢 Yavaş kan şekerini yükseltir</span>"},
+  {name:"Patates",emoji:"🥔",answer:"karbonhidrat",gi:"fast",hint:"Toprak altında yetişen nişastalı sebze.",hintShort:"Nişastalı sebze.",explanation:"Patates yüksek <strong>karbonhidrat</strong> içerir. 🥔<br><span style='color:#dc2626;font-size:.8rem'>🔴 Hızlı kan şekerini yükseltir!</span>"},
+  {name:"Yulaf",emoji:"🌾",answer:"karbonhidrat",gi:"slow",hint:"Tahıl ailesinden, yavaş sindirilen enerji kaynağı.",hintShort:"Tahıl, yavaş enerji.",explanation:"Yulaf kompleks <strong>karbonhidrat</strong> içerir. 🌾<br><span style='color:#16a34a;font-size:.8rem'>🟢 Yavaş kan şekerini yükseltir — Harika seçim!</span>"},
+  {name:"Üzüm",emoji:"🍇",answer:"karbonhidrat",gi:"fast",hint:"Küçük tanelerin içinde çok şeker saklı!",hintShort:"Şekerli meyve.",explanation:"Üzüm yüksek doğal şeker yani <strong>karbonhidrat</strong> içerir. 🍇<br><span style='color:#dc2626;font-size:.8rem'>🔴 Hızlı kan şekerini yükseltir!</span>"},
+  {name:"Portakal",emoji:"🍊",answer:"karbonhidrat",gi:"slow",hint:"C vitamini deposu, tatlı ve ekşi narenciye.",hintShort:"Narenciye meyvesi.",explanation:"Portakal doğal şeker içerir. 🍊<br><span style='color:#16a34a;font-size:.8rem'>🟢 Lifi sayesinde yavaş kan şekerini yükseltir</span>"},
+  {name:"Mısır",emoji:"🌽",answer:"karbonhidrat",gi:"mid",hint:"Sarı taneli, tatlımsı nişastalı sebze.",hintShort:"Nişastalı sebze.",explanation:"Mısır nişasta içerdiği için <strong>karbonhidrat</strong> kaynağıdır. 🌽<br><span style='color:#d97706;font-size:.8rem'>🟡 Orta hızda kan şekerini yükseltir</span>"},
+  {name:"Simit",emoji:"🥯",answer:"karbonhidrat",gi:"fast",hint:"Türk kahvaltısının vazgeçilmezi, susam kaplı halka.",hintShort:"Unlu mamul.",explanation:"Simit undan yapıldığı için yüksek <strong>karbonhidrat</strong> içerir. 🥯<br><span style='color:#dc2626;font-size:.8rem'>🔴 Hızlı kan şekerini yükseltir!</span>"},
+  {name:"Bal",emoji:"🍯",answer:"karbonhidrat",gi:"fast",hint:"Arıların yaptığı çok tatlı sıvı. Şeker oranı çok yüksek!",hintShort:"Doğal şeker, çok tatlı.",explanation:"Bal neredeyse tamamen doğal şekerden oluşur — saf <strong>karbonhidrat</strong>! 🐝<br><span style='color:#dc2626;font-size:.8rem'>🔴 Çok hızlı kan şekerini yükseltir!</span>"},
+  {name:"Bulgur",emoji:"🌾",answer:"karbonhidrat",gi:"slow",hint:"Buğdaydan yapılan, posalı tahıl.",hintShort:"Posalı tahıl.",explanation:"Bulgur kompleks <strong>karbonhidrat</strong> içerir. 🌾<br><span style='color:#16a34a;font-size:.8rem'>🟢 Yavaş kan şekerini yükseltir — Pirinçten daha iyi seçim!</span>"},
+  {name:"Çilek",emoji:"🍓",answer:"karbonhidrat",gi:"slow",hint:"Kırmızı, küçük ve tatlı. Meyve ailesinden.",hintShort:"Kırmızı meyve.",explanation:"Çilek doğal şeker içerir. 🍓<br><span style='color:#16a34a;font-size:.8rem'>🟢 Az şekerli meyveler arasındadır</span>"},
+  {name:"Karpuz",emoji:"🍉",answer:"karbonhidrat",gi:"fast",hint:"Yazın yediğimiz büyük, sulu ve tatlı meyve.",hintShort:"Sulu yaz meyvesi.",explanation:"Karpuz doğal şeker içerir. 🍉<br><span style='color:#dc2626;font-size:.8rem'>🔴 Glisemik indeksi yüksek, dikkatli tüketilmeli!</span>"},
+  // YAĞ
+  {name:"Zeytinyağı",emoji:"🫒",answer:"yag",gi:null,hint:"Salatanın üzerine dökülen bitkisel sıvı.",hintShort:"Bitkisel sıvı yağ.",explanation:"Zeytinyağı saf bir <strong>yağ</strong> kaynağıdır. Uzun süreli enerji depomuz! 🌿"},
+  {name:"Tereyağı",emoji:"🧈",answer:"yag",gi:null,hint:"Ekmeğin üzerine sürülen, sütten yapılan besin.",hintShort:"Sütten yapılan yağ.",explanation:"Tereyağı bir <strong>yağ</strong> kaynağıdır. Az ama öz tüketilmeli! 🐄"},
+  {name:"Ceviz",emoji:"🥜",answer:"yag",gi:null,hint:"Beyin gibi görünen kuruyemiş, omega-3 içerir.",hintShort:"Kuruyemiş, omega-3.",explanation:"Ceviz sağlıklı <strong>yağ</strong> açısından zengindir. Kalp sağlığı için harika! 🧠"},
+  {name:"Ayçiçek Yağı",emoji:"🌻",answer:"yag",gi:null,hint:"Yemek pişirmede kullanılan bitkisel sıvı.",hintShort:"Bitkisel sıvı yağ.",explanation:"Ayçiçek yağı saf bir <strong>yağ</strong> kaynağıdır! 🌻"},
+  {name:"Avokado",emoji:"🥑",answer:"yag",gi:null,hint:"Yeşil, kremalı yapıda tropikal meyve. İçi yağ dolu!",hintShort:"Tropikal, yağlı meyve.",explanation:"Avokado sağlıklı tekli doymamış <strong>yağ</strong> içerir. Kalp dostu! 💚"},
+  {name:"Fındık Ezmesi",emoji:"🥜",answer:"yag",gi:null,hint:"Ekmek üstüne sürülen, kuruyemişten yapılan krema.",hintShort:"Kuruyemiş ezmesi.",explanation:"Fındık ezmesi yüksek <strong>yağ</strong> içerir. Sağlıklı yağ asitleri açısından zengin! 🌰"},
+  {name:"Zeytin",emoji:"🫒",answer:"yag",gi:null,hint:"Kahvaltıda yediğimiz siyah veya yeşil meyvecik.",hintShort:"Yağ içeren meyve.",explanation:"Zeytin sağlıklı tekli doymamış <strong>yağ</strong> içerir. Akdeniz diyetinin vazgeçilmezi! 🌿"},
+  {name:"Krema",emoji:"🍦",answer:"yag",gi:null,hint:"Sütün en yağlı kısmından yapılan beyaz sıvı.",hintShort:"Yüksek yağlı süt ürünü.",explanation:"Krema neredeyse tamamen <strong>yağ</strong>tan oluşur. Çok az miktarda kullanılmalı! 🐄"},
+  {name:"Hindistan Cevizi",emoji:"🥥",answer:"yag",gi:null,hint:"Tropikal bir meyve. Yağ oranı çok yüksek.",hintShort:"Tropikal yağlı meyve.",explanation:"Hindistan cevizi yüksek oranda doymuş <strong>yağ</strong> içerir. Az miktarda tüketilmeli! 🌴"},
+  {name:"Çikolata",emoji:"🍫",answer:"yag",gi:null,hint:"Kakaodan yapılan tatlı. Asıl makrosu yağdır.",hintShort:"Kakao ve yağ içerir.",explanation:"Bitter çikolata ağırlıklı olarak <strong>yağ</strong> içerir. Az miktarda tüketilebilir! 🍫"},
+];
+
+const carbFoods=[
+  {name:"Pirinç Pilavı",emoji:"🍚",portion:"4 yemek kaşığı (100g)",carb:28,options:[10,28,45,55],gi:"fast",tip:"100g pirinç pilavı ≈ 28g karbonhidrat. 🔴 Hızlı kan şekeri yükseltir!"},
+  {name:"Ekmek",emoji:"🍞",portion:"1 dilim (25g)",carb:12,options:[5,12,20,30],gi:"mid",tip:"1 dilim ekmek ≈ 12g karbonhidrat. 🟡 Tam buğday ekmeği daha yavaş sindirilir!"},
+  {name:"Muz",emoji:"🍌",portion:"1 orta boy (120g)",carb:25,options:[10,17,25,35],gi:"mid",tip:"Orta boy bir muz ≈ 25g karbonhidrat. 🟡 Yarım muz daha güvenli!"},
+  {name:"Süt",emoji:"🥛",portion:"1 su bardağı (200ml)",carb:10,options:[3,10,18,25],gi:"slow",tip:"1 bardak süt ≈ 10g karbonhidrat (laktoz). 🟢 Yavaş sindirilir, güvenli!"},
+  {name:"Elma",emoji:"🍎",portion:"1 orta boy (150g)",carb:20,options:[8,14,20,30],gi:"slow",tip:"Orta boy bir elma ≈ 20g karbonhidrat. 🟢 Kabuğuyla yemek lif alımını artırır!"},
+  {name:"Makarna",emoji:"🍝",portion:"1 kepçe pişmiş (80g)",carb:26,options:[12,19,26,38],gi:"mid",tip:"1 kepçe pişmiş makarna ≈ 26g karbonhidrat. 🟡 Tam buğday makarna daha sağlıklı!"},
+  {name:"Patates",emoji:"🥔",portion:"1 orta boy haşlanmış (120g)",carb:22,options:[10,16,22,32],gi:"fast",tip:"Orta boy haşlanmış patates ≈ 22g karbonhidrat. 🔴 Hızlı kan şekeri yükseltir!"},
+  {name:"Yulaf Ezmesi",emoji:"🌾",portion:"1 kase (200ml sütle)",carb:30,options:[15,22,30,42],gi:"slow",tip:"1 kase yulaf ezmesi ≈ 30g karbonhidrat. 🟢 Yavaş sindirilir, kan şekerini dengeler!"},
+  {name:"Portakal Suyu",emoji:"🍊",portion:"1 su bardağı (200ml)",carb:22,options:[8,15,22,32],gi:"fast",tip:"1 bardak portakal suyu ≈ 22g karbonhidrat. 🔴 Lif yok, şeker hızlı yükselir!"},
+  {name:"Mercimek Çorbası",emoji:"🫘",portion:"1 kase (250ml)",carb:20,options:[8,14,20,28],gi:"slow",tip:"1 kase mercimek çorbası ≈ 20g karbonhidrat. 🟢 Yüksek lif içeriği kan şekerini dengeler!"},
+  {name:"Bisküvi",emoji:"🍪",portion:"3 adet (30g)",carb:20,options:[10,15,20,28],gi:"fast",tip:"3 adet bisküvi ≈ 20g karbonhidrat. 🔴 Tam buğday bisküviler daha iyi tercih!"},
+  {name:"Mısır",emoji:"🌽",portion:"1 koçan (100g)",carb:19,options:[8,13,19,28],gi:"mid",tip:"1 koçan mısır ≈ 19g karbonhidrat. 🟡 Orta glisemik indeksli!"},
+  {name:"Simit",emoji:"🥯",portion:"1 adet (80g)",carb:42,options:[20,30,42,55],gi:"fast",tip:"1 simit ≈ 42g karbonhidrat! 🔴 Çok yüksek, dikkatli tüket!"},
+  {name:"Üzüm",emoji:"🍇",portion:"1 avuç (100g)",carb:17,options:[8,13,17,25],gi:"fast",tip:"1 avuç üzüm ≈ 17g karbonhidrat. 🔴 Küçük taneler yüksek şeker!"},
+  {name:"Portakal",emoji:"🍊",portion:"1 orta boy (150g)",carb:18,options:[8,12,18,26],gi:"slow",tip:"1 portakal ≈ 18g karbonhidrat. 🟢 Lifi sayesinde yavaş yükselir!"},
+  {name:"Bal",emoji:"🍯",portion:"1 tatlı kaşığı (15g)",carb:12,options:[5,8,12,18],gi:"fast",tip:"1 tatlı kaşığı bal ≈ 12g karbonhidrat. 🔴 Tamamen şeker — çok az kullan!"},
+  {name:"Karpuz",emoji:"🍉",portion:"1 dilim (200g)",carb:15,options:[6,10,15,22],gi:"fast",tip:"1 dilim karpuz ≈ 15g karbonhidrat. 🔴 Glisemik indeksi yüksek!"},
+  {name:"Yoğurt",emoji:"🥣",portion:"1 kase sade (150g)",carb:8,options:[3,8,14,20],gi:"slow",tip:"1 kase sade yoğurt ≈ 8g karbonhidrat. 🟢 Meyveli yoğurtlarda şeker çok daha fazla!"},
+  {name:"Çikolatalı Gofret",emoji:"🍫",portion:"2 adet (30g)",carb:22,options:[10,16,22,32],gi:"fast",tip:"2 adet gofret ≈ 22g karbonhidrat. 🔴 İşlenmiş, şekerli — dikkat!"},
+  {name:"Bulgur Pilavı",emoji:"🌾",portion:"4 yemek kaşığı (100g)",carb:24,options:[12,18,24,35],gi:"slow",tip:"100g bulgur pilavı ≈ 24g karbonhidrat. 🟢 Pirinçten daha iyi tercih!"},
+];
+
+// Hypo scenarios
+const hypoScenarios=[
+  {
+    id:1,scenario:"Kan şekerin 65 mg/dL'ye düştü. Titreme ve terleme hissediyorsun. Ne yersin?",
+    foods:[
+      {emoji:"🧃",name:"Meyve Suyu",desc:"Hızlı şeker içerir",correct:true,feedback:"✅ Doğru! Meyve suyu hızlı emilir ve 15 dakikada kan şekerini yükseltir. 15/15 kuralını uygula: 15g hızlı şeker ye, 15 dakika bekle, tekrar ölç!",showTimer:true},
+      {emoji:"🍫",name:"Bitter Çikolata",desc:"Yağlı, geç etkili",correct:false,feedback:"❌ Yanlış! Çikolata yağ içerir. Yağ sindirimini yavaşlatır, kan şekeri geç yükselir. Hipoglisemide yağlı besinler ilk tercih olmaz!"},
+      {emoji:"🍌",name:"Muz",desc:"Doğal şeker içerir",correct:true,feedback:"✅ Doğru! Muz hızlı enerji verir. Ancak meyve suyu kadar hızlı değil — mümkünse sıvı tercih et!",showTimer:true},
+      {emoji:"🌾",name:"Tam Tahıllı Ekmek",desc:"Yavaş sindirilen lif",correct:false,feedback:"❌ Yanlış! Tam tahıllı ekmek liflidir. Lif sindirimini yavaşlatır ve kan şekerini geç yükseltir. Acil hipoglisemide doğru tercih değil!"},
+    ]
+  },
+  {
+    id:2,scenario:"Okulda ders sırasında başın dönüyor, odaklanamıyorsun. Kan şekerin düşmüş. Çantanda bunlar var. Ne seçersin?",
+    foods:[
+      {emoji:"🍬",name:"Kesme Şeker (3 adet)",desc:"Saf glikoz içerir",correct:true,feedback:"✅ Mükemmel! 3 kesme şeker ≈ 15g karbonhidrat. Bu tam 15/15 kuralına uygun! 15 dakika bekle, tekrar ölç.",showTimer:true},
+      {emoji:"🥪",name:"Peynirli Sandviç",desc:"Protein ve yağ ağırlıklı",correct:false,feedback:"❌ Sandviç proteinlidir ve yavaş sindirilir. Acil kan şekeri düşüşünde işe yaramaz. Önce hızlı şeker, sonra kalıcı atıştırmalık!"},
+      {emoji:"🧃",name:"Meyve Suyu Kutusu",desc:"Hızlı emilen şeker",correct:true,feedback:"✅ Doğru! Küçük bir kutu meyve suyu (200ml) ≈ 20g karbonhidrat. Hızlı emilir. 15 dakika bekle, tekrar ölç!",showTimer:true},
+      {emoji:"🥜",name:"Ceviz",desc:"Yağlı, yavaş enerji",correct:false,feedback:"❌ Yanlış! Ceviz yüksek yağ içerir ve kan şekerini çok yavaş yükseltir. Hipoglisemi acilinde kullanılmaz!"},
+    ]
+  },
+  {
+    id:3,scenario:"Parkta oynarken baş dönmesi hissettın. Kan şekerin 60 mg/dL. Yanında bunlar var:",
+    foods:[
+      {emoji:"🍭",name:"Şeker (lolipop)",desc:"Saf glikoz",correct:true,feedback:"✅ Doğru! Şeker saf karbonhidrattır. Hızlıca emilir. 15/15 kuralını uygula: ye, 15 dakika bekle, tekrar ölç!",showTimer:true},
+      {emoji:"🧁",name:"Kek",desc:"Yağlı, hamurlu",correct:false,feedback:"❌ Kek yağ ve un içerir. Yağ sindirimini yavaşlatır. Hızlı şeker yükselişi sağlamaz. Hipoglisemide ilk tercih değil!"},
+      {emoji:"🍊",name:"Portakal Suyu",desc:"Hızlı şeker",correct:true,feedback:"✅ Doğru! Portakal suyu hızlı emilebilen şeker içerir. 15 dakika sonra tekrar kan şekerini ölç!",showTimer:true},
+      {emoji:"🍕",name:"Pizza",desc:"Yağlı, ağır",correct:false,feedback:"❌ Pizza yağ ve protein içerir. Çok yavaş sindirilir. Acil hipoglisemide en kötü seçeneklerden biri!"},
+    ]
+  },
+  {
+    id:4,scenario:"Yatmadan önce kan şekerini ölçtün: 72 mg/dL. Gece için ne yapmalısın?",
+    foods:[
+      {emoji:"🥛",name:"Süt + 2 Bisküvi",desc:"Hem hızlı hem uzun etkili",correct:true,feedback:"✅ Mükemmel seçim! Süt hızlı karbonhidrat, bisküvi ise biraz daha uzun etkili enerji sağlar. Gece hipoglisemisini önler!",showTimer:false},
+      {emoji:"💊",name:"Hiçbir şey yeme",desc:"Bekle, geçer",correct:false,feedback:"❌ Tehlikeli! Gece boyunca kan şekerin daha da düşebilir. 72 mg/dL sınırda bir değer — diyetisyenine veya ailenize mutlaka söyle!"},
+      {emoji:"🍞",name:"Ekmek + Peynir",desc:"Karbonhidrat + protein",correct:true,feedback:"✅ Doğru! Ekmek hızlı enerji, peynir ise yavaş enerji sağlar. Bu kombinasyon gece boyunca kan şekerini dengede tutar!",showTimer:false},
+      {emoji:"🍰",name:"Büyük bir dilim pasta",desc:"Çok fazla şeker",correct:false,feedback:"❌ Çok fazla! Pasta kan şekerini aşırı yükseltir. Sadece ihtiyaç kadar karbonhidrat al — 15-20g yeterli!"},
+    ]
+  },
+  {
+    id:5,scenario:"Egzersizden sonra başın dönüyor, terliyorsun. Kan şekerin 58 mg/dL. NE YAPMALSIN?",
+    foods:[
+      {emoji:"🧃",name:"Hemen meyve suyu iç",desc:"İlk adım: Hızlı şeker",correct:true,feedback:"✅ Doğru ilk adım! Hızlı şeker al. Sonra 15 dakika bekle, tekrar ölç. Şekerin hâlâ düşükse tekrarla!",showTimer:true},
+      {emoji:"🏃",name:"Egzersize devam et",desc:"Hareket etmeye devam",correct:false,feedback:"❌ ÇOK TEHLİKELİ! Egzersiz devam ederse kan şekeri daha da düşer. Hemen dur, otur, hızlı şeker al!"},
+      {emoji:"📱",name:"Aileyi veya öğretmeni ara",desc:"Yardım iste",correct:true,feedback:"✅ Doğru! Hızlı şeker alırken aynı zamanda yetişkin bir kişiye bildir. Güvenliğin için yalnız olma!",showTimer:false},
+      {emoji:"😴",name:"Yat ve dinlen",desc:"Biraz uyu",correct:false,feedback:"❌ TEHLİKELİ! Hipoglisemide uyumak kan şekerinin daha da düşmesine yol açar. Hemen hareket et, hızlı şeker al!"},
+    ]
+  },
+];
+
+// Plate pairing questions
+const plateQuestions=[
+  {emoji:"🍎",food:"Elma yiyeceksin",question:"Kan şekerinin daha yavaş yükselmesi için yanına ne eklersin?",
+    options:[
+      {emoji:"🧀",name:"Peynir",desc:"Protein + yağ ekler",correct:true,feedback:"✅ Harika! Elma + Peynir: Karbonhidrat yanına protein eklemek sindirimini yavaşlatır ve kan şekerini dengeli tutar!"},
+      {emoji:"🍯",name:"Bal",desc:"Daha fazla şeker ekler",correct:false,feedback:"❌ Yanlış! Bal da karbonhidrattır. Karbonhidrat + karbonhidrat kombinasyonu kan şekerini daha hızlı yükseltir!"},
+      {emoji:"🧁",name:"Kek",desc:"Yağlı hamur işi",correct:false,feedback:"❌ Yanlış! Kek hem yağlı hem karbonhidrat açısından zengindir. Kan şekerini olumsuz etkiler!"},
+      {emoji:"🥣",name:"Yoğurt",desc:"Protein + probiyotik",correct:true,feedback:"✅ Süper! Elma + Yoğurt: Meyvenin şekerini yavaşlatır, bağırsak sağlığına da katkı sağlar!"},
+    ]},
+  {emoji:"🍞",food:"Ekmek yiyeceksin",question:"Kan şekerini dengelemek için yanına hangisini eklersin?",
+    options:[
+      {emoji:"🥚",name:"Yumurta",desc:"Protein kaynağı",correct:true,feedback:"✅ Mükemmel! Ekmek + Yumurta: Protein, ekmeğin karbonhidratını yavaşlatır. Klasik sağlıklı kahvaltı!"},
+      {emoji:"🍌",name:"Muz",desc:"Karbonhidrat ekler",correct:false,feedback:"❌ Yanlış! Ekmek + Muz: İki karbonhidrat kaynağını birleştirmek kan şekerini hızla yükseltir!"},
+      {emoji:"🧈",name:"Tereyağı",desc:"Yağ ekler — yavaşlatır",correct:true,feedback:"✅ Doğru! Az tereyağı eklemek, ekmeğin sindirimini yavaşlatır. Ama çok fazla tüketme!"},
+      {emoji:"🍬",name:"Reçel (çok)",desc:"Saf şeker ekler",correct:false,feedback:"❌ Yanlış! Çok reçel = ek şeker. Ekmek zaten karbonhidrat içeriyor, üzerine şeker eklemek kan şekerini uçurur!"},
+    ]},
+  {emoji:"🍚",food:"Pirinç pilavı yiyeceksin",question:"Kan şekerinin daha dengeli kalması için tabağına ne eklersin?",
+    options:[
+      {emoji:"🥩",name:"Pirzola / Et",desc:"Protein + yağ",correct:true,feedback:"✅ Doğru! Pirinç + Et: Klasik Türk tabağı! Protein, pilavın glisemik etkisini düşürür. Mantıklı kombinasyon!"},
+      {emoji:"🍌",name:"Muz",desc:"Ekstra karbonhidrat",correct:false,feedback:"❌ Yanlış! Pilav + Muz: İki yüksek karbonhidrat kaynağı. Kan şekeri hızla yükselir!"},
+      {emoji:"🫘",name:"Mercimek",desc:"Protein + lif",correct:true,feedback:"✅ Harika! Pirinç + Mercimek: Mercimekteki lif ve protein, pilavın GI etkisini önemli ölçüde düşürür!"},
+      {emoji:"🍞",name:"Ekmek",desc:"Daha fazla karbonhidrat",correct:false,feedback:"❌ Yanlış! Pilav yanına ekmek: Çok fazla karbonhidrat. Kan şekerini aşırı yükseltir!"},
+    ]},
+  {emoji:"🍌",food:"Muz yiyeceksin (spor öncesi)",question:"Spor öncesi muzu ne ile tamamlarsın?",
+    options:[
+      {emoji:"🥜",name:"Ceviz / Badem",desc:"Sağlıklı yağ ekler",correct:true,feedback:"✅ Harika! Muz + Ceviz: Meyvenin hızlı şekeri + yağın yavaş enerjisi = uzun süreli yakıt. Sporcu tabağı!"},
+      {emoji:"🧃",name:"Meyve Suyu",desc:"Daha fazla şeker",correct:false,feedback:"❌ Dikkat! Muz + Meyve Suyu: İki hızlı karbonhidrat. Kısa sürede çok fazla şeker alırsın!"},
+      {emoji:"🥚",name:"Haşlanmış Yumurta",desc:"Protein ekler",correct:true,feedback:"✅ Doğru! Muz + Yumurta: Meyvenin enerjisi + proteinin kas desteği. Spor öncesi ideal!"},
+      {emoji:"🍫",name:"Çikolata",desc:"Yağ + şeker karışımı",correct:false,feedback:"❌ Yanlış! Muz + Çikolata: Hem yağlı hem şekerli. Kan şekerini düzensiz etkiler!"},
+    ]},
+  {emoji:"🥔",food:"Haşlanmış patates yiyeceksin",question:"Patatesi nasıl daha sağlıklı yaparsın?",
+    options:[
+      {emoji:"🥗",name:"Salata ile",desc:"Lif ekler",correct:true,feedback:"✅ Harika! Patates + Salata: Sebzelerin lifi, patateste kan şekerini yavaşlatır. Akıllı tercih!"},
+      {emoji:"🧈",name:"Bol tereyağı",desc:"Yağ ekler",correct:true,feedback:"✅ Kısmen doğru! Az tereyağı sindirimini yavaşlatır. Ama çok fazla yağ da sağlıklı değil!"},
+      {emoji:"🍞",name:"Ekmek ile",desc:"Çok fazla karbonhidrat",correct:false,feedback:"❌ Yanlış! Patates + Ekmek: İkisi de yüksek karbonhidrat. Kan şekerini çok yükseltir!"},
+      {emoji:"🍗",name:"Tavuk ile",desc:"Protein ekler",correct:true,feedback:"✅ Mükemmel! Patates + Tavuk: Protein, patateste kan şekerini dengeler. Klasik sağlıklı tabak!"},
+    ]},
+  {emoji:"🌾",food:"Yulaf ezmesi yiyeceksin",question:"Yulafın faydalarını artırmak için ne eklersin?",
+    options:[
+      {emoji:"🍓",name:"Çilek",desc:"Az şekerli meyve + C vitamini",correct:true,feedback:"✅ Mükemmel! Yulaf + Çilek: Her ikisi de düşük GI'li. Lif bakımından zengin, enfes bir kahvaltı!"},
+      {emoji:"🍯",name:"Bol bal",desc:"Saf şeker ekler",correct:false,feedback:"❌ Dikkat! Az bal tamam ama bol bal, yulafın düşük GI etkisini bozar. Az kullan!"},
+      {emoji:"🥛",name:"Süt veya Yoğurt",desc:"Protein ekler",correct:true,feedback:"✅ Harika! Yulaf + Süt: Protein + kompleks karbonhidrat = saatlerce tok kalırsın! 🌟"},
+      {emoji:"🍌",name:"Muz",desc:"Orta GI meyve",correct:true,feedback:"✅ İyi tercih! Yulaf + Muz: Yulafın yavaş enerjisi ile muzun orta GI etkisi dengeli bir başlangıç sağlar!"},
+    ]},
+];
+
+// Exercise scenarios
+const exScenarios=[
+  {emoji:"⚽",title:"Futbol maçına gidiyorsun!",
+    scenario:"Bugün 2 saatlik futbol maçın var. Maçtan önce kan şekerini ölçtün: 110 mg/dL. Ne yapmalısın?",
+    options:[
+      {emoji:"🍌",text:"Maçtan 30 dk önce muz veya küçük atıştırmalık ye",correct:true,feedback:"✅ Doğru! Egzersiz kan şekerini düşürür. Önceden karbonhidrat almak güvenliği artırır. Muz veya 1-2 bisküvi ideal!"},
+      {emoji:"🏃",text:"Hiçbir şey yemeden hemen oyna",correct:false,feedback:"❌ Dikkat! Egzersiz sırasında kan şekeri düşebilir. Önceden küçük bir atıştırmalık alman güvenliğini artırır!"},
+      {emoji:"🍕",text:"Büyük bir pizza ye, sonra oyna",correct:false,feedback:"❌ Yanlış! Çok büyük öğün mideyi şişirir ve performansı düşürür. Hafif ve karbonhidratlı bir atıştırmalık daha iyi!"},
+      {emoji:"🧃",text:"Yanına küçük meyve suyu kutusu al",correct:true,feedback:"✅ Harika! Acil hipoglisemi için hazır şeker taşımak çok akıllıca. Her diyabetlinin çantasında bulunmalı!"},
+    ]},
+  {emoji:"🏊",title:"Yüzme dersine gidiyorsun!",
+    scenario:"Yüzmeden sonra kan şekerini ölçtün: 80 mg/dL. Biraz düşük. Ne yapmalısın?",
+    options:[
+      {emoji:"🥛",text:"Süt ve 2 bisküvi ye",correct:true,feedback:"✅ Doğru! 80 mg/dL sınırda. Hem hızlı hem uzun etkili karbonhidrat almak kan şekerini dengede tutar!"},
+      {emoji:"💧",text:"Sadece su iç, geçer",correct:false,feedback:"❌ Yanlış! Su kan şekerini yükseltmez. 80 mg/dL'de küçük bir atıştırmalık alman güvenli olur!"},
+      {emoji:"🍔",text:"Büyük hamburger ye",correct:false,feedback:"❌ Çok fazla! Büyük öğün kan şekerini aşırı yükseltir. Küçük ama dengeli bir atıştırmalık daha doğru!"},
+      {emoji:"🍎",text:"Bir elma ye",correct:true,feedback:"✅ İyi seçim! Elma düşük GI'li, yavaş enerji verir. Kan şekerini nazikçe dengeler!"},
+    ]},
+  {emoji:"🚴",title:"Bisiklet turuna çıkıyorsun!",
+    scenario:"1 saatlik bisiklet turu planlıyorsun. Kan şekerin 95 mg/dL. Tur sırasında ne yapmalısın?",
+    options:[
+      {emoji:"🧃",text:"Her 30 dakikada bir küçük atıştırmalık al",correct:true,feedback:"✅ Mükemmel! Uzun egzersizde her 30-45 dakikada 15g karbonhidrat almak kan şekerini dengede tutar!"},
+      {emoji:"📵",text:"Kan şekerini kontrol etme, rahatsız eder",correct:false,feedback:"❌ Yanlış! Uzun egzersizde kan şekerini düzenli kontrol etmek çok önemli. Yanına ölçüm aleti al!"},
+      {emoji:"💊",text:"Ekstra insülin al, hazır ol",correct:false,feedback:"❌ TEHLİKELİ! Doktor onayı olmadan ekstra insülin almak hipoglisemiye yol açar. Bunu asla yapma!"},
+      {emoji:"📱",text:"Ailenle nerede olduğunu paylaş",correct:true,feedback:"✅ Doğru! Yalnız egzersizde konum paylaşmak güvenlik için çok önemli. Diyabetli çocuklar yalnız uzun tur yapmamalı!"},
+    ]},
+  {emoji:"💃",title:"Dans etkinliğine gidiyorsun!",
+    scenario:"2 saatlik dans etkinliği var. Dans başlamadan önce ne hazırlarsın?",
+    options:[
+      {emoji:"🎒",text:"Çantana meyve suyu ve şeker koy",correct:true,feedback:"✅ Harika! Acil hipoglisemi için hızlı şeker taşımak her diyabetlinin alışkanlığı olmalı. Süper hazırlık!"},
+      {emoji:"🍕",text:"Önceden bol yağlı yemek ye",correct:false,feedback:"❌ Yanlış! Yağlı yemek mideyi ağırlaştırır, dans performansını düşürür. Hafif karbonhidratlı atıştırmalık daha iyi!"},
+      {emoji:"👩‍🏫",text:"Öğretmenine diyabetini söyle",correct:true,feedback:"✅ Çok önemli! Etkinlik sorumlusunun bilgi sahibi olması, acil durumda hızlı müdahale sağlar!"},
+      {emoji:"🚫",text:"Dans etme, tehlikeli",correct:false,feedback:"❌ Yanlış düşünce! Diyabetli çocuklar dans edebilir, spor yapabilir. Sadece hazırlıklı olmak yeterli!"},
+    ]},
+  {emoji:"🏋️",title:"Spor salonuna gidiyorsun!",
+    scenario:"Ağırlık antrenmanı yapacaksın. Antrenman sonrası ne yapmalısın?",
+    options:[
+      {emoji:"🥛",text:"Protein içeceği veya yoğurt iç",correct:true,feedback:"✅ Doğru! Egzersiz sonrası protein kas onarımını destekler. Karbonhidrat ile birleştirmek daha iyi!"},
+      {emoji:"🍭",text:"Sadece şeker ye",correct:false,feedback:"❌ Yanlış! Şeker tek başına yeterli değil. Kas onarımı için protein de gerekli. Dengeli beslenmek önemli!"},
+      {emoji:"🍗",text:"Tavuk + pilav ye",correct:true,feedback:"✅ Mükemmel! Protein + karbonhidrat kombinasyonu: Kasları onarır, enerji depolarını doldurur. Klasik sporcu tabağı!"},
+      {emoji:"💤",text:"Hemen uyu, dinlen yeterli",correct:false,feedback:"❌ Yanlış! Egzersiz sonrası beslenme çok önemli. Uyumadan önce mutlaka bir şeyler ye. Yoksa kas kütlesi kaybedersin!"},
+    ]},
+];
+
+// ══════════════════════════════════════════
+//  SAVE / LOAD
+// ══════════════════════════════════════════
+const SK='makroKahraman_v3';
+let sd={playerName:'',progress:{easy:0,medium:0,hard:0,carb:0,hypo:0,plate:0,ex:0},xp:0};
+function loadSave(){try{const r=localStorage.getItem(SK);if(r){sd=JSON.parse(r);return true;}}catch(e){}return false;}
+function saveSave(){try{localStorage.setItem(SK,JSON.stringify(sd));}catch(e){}}
+function addXP(amount){
+  sd.xp=(sd.xp||0)+amount;
+  saveSave();
+  updateCharDisplay();
+}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+const THR={easy:100,medium:150,hard:200};
+const DCFG={
+  easy: {lives:5,hint:'full', sub:true, timer:false,TOTAL:15,bonus:1,  target:100,xpPer:5},
+  medium:{lives:3,hint:'short',sub:true, timer:false,TOTAL:15,bonus:1.5,target:150,xpPer:8},
+  hard: {lives:1,hint:'none', sub:false,timer:true, TOTAL:15,bonus:2,  target:200,xpPer:12},
+};
+let cDiff='easy',cFoods=[],cIdx=0,score=0,lives=5,streak=0,sessionXP=0;
+let tInt=null,tLeft=10,sndOn=true;
+let cIdx2=0,cScore=0,cLives=3,cQ=[];
+let hIdx=0,hScore=0,hScen=[];
+let plIdx=0,plScore=0,plQ=[];
+let exIdx=0,exScore=0,exQ=[];
+let eduReturn='worldScreen',curChapter=1;
+
+// ══════════════════════════════════════════
+//  AUDIO
+// ══════════════════════════════════════════
+const ACtx=window.AudioContext||window.webkitAudioContext;
+let actx=null;
+function ga(){if(!actx)actx=new ACtx();return actx;}
+function pt(f,t='sine',v=.2,g=.12){if(!sndOn)return;try{const a=ga();f.forEach((fr,i)=>{const o=a.createOscillator(),gn=a.createGain();o.connect(gn);gn.connect(a.destination);o.frequency.value=fr;o.type=t;const ts=a.currentTime+i*g;gn.gain.setValueAtTime(v,ts);gn.gain.exponentialRampToValueAtTime(.001,ts+.28);o.start(ts);o.stop(ts+.32);});}catch(e){}}
+function pC(){pt([523,659,784]);}
+function pW(){pt([220,196],'sawtooth',.16,.18);}
+function pSt(){pt([523,659,784,1047],'sine',.18,.1);}
+function pUn(){pt([392,523,659,784,1047],'sine',.18,.08);}
+function toggleSound(){sndOn=!sndOn;document.getElementById('soundBtn').textContent=sndOn?'🔊':'🔇';}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function ss(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('homeBtn').style.display=id==='nameScreen'?'none':'flex';
+  document.getElementById('eduBtn').style.display=(id==='gameScreen'||id==='carbScreen')?'flex':'none';
+}
+function goWorld(){clearInterval(tInt);document.getElementById('streak').classList.remove('show');document.getElementById('fov').classList.remove('show');updateWorldUI();ss('worldScreen');}
+function openChapter(n){
+  const p=sd.progress;
+  if(n===1){updateLevelUI();ss('levelScreen');}
+  else if(n===2&&p.easy>=THR.easy&&p.medium>=THR.medium&&p.hard>=THR.hard){curChapter=2;startCarb();}
+  else if(n===3&&p.carb>=80){curChapter=3;startHypo();}
+  else if(n===4&&p.hypo>=40){curChapter=4;startPlate();}
+  else if(n===5&&p.plate>=50){curChapter=5;startEx();}
+}
+function openEdu(){openEduPage(curChapter);}
+function openEduPage(ch){curChapter=ch;eduReturn=document.querySelector('.screen.active').id;document.getElementById('eduContent').innerHTML=getEdu(ch);ss('eduScreen');}
+function backFromEdu(){ss(eduReturn);if(eduReturn==='worldScreen')updateWorldUI();}
+
+// ══════════════════════════════════════════
+//  CHAR DISPLAY
+// ══════════════════════════════════════════
+function updateCharDisplay(){
+  const xp=sd.xp||0;
+  const c=getCostume(xp);
+  const next=COSTUMES.find(co=>co.minXP>xp);
+  const xpMax=next?next.minXP:xp+1;
+  const xpPrev=c.minXP;
+  const pct=Math.min(100,((xp-xpPrev)/(xpMax-xpPrev))*100)||0;
+  document.getElementById('charAvatar').textContent=c.avatar;
+  document.getElementById('charNameTag').textContent=sd.playerName||'Kahraman';
+  document.getElementById('charLevel').textContent=`${c.name}`;
+  document.getElementById('charCostume').textContent=c.label;
+  document.getElementById('xpVal').textContent=xp;
+  document.getElementById('xpMax').textContent=next?xpMax:'MAX';
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('stXP').textContent=xp;
+}
+
+// ══════════════════════════════════════════
+//  WORLD UI
+// ══════════════════════════════════════════
+function updateWorldUI(){
+  document.getElementById('greetName').textContent=sd.playerName||'Kahraman';
+  updateCharDisplay();
+  const p=sd.progress;
+  document.getElementById('stE').textContent=p.easy?p.easy+'p':'—';
+  document.getElementById('stM').textContent=p.medium?p.medium+'p':'—';
+  document.getElementById('stH').textContent=p.hard?p.hard+'p':'—';
+
+  const d1=[p.easy>=THR.easy,p.medium>=THR.medium,p.hard>=THR.hard];
+  document.getElementById('ch1pf').style.width=(d1.filter(Boolean).length/3*100)+'%';
+  const ch1done=d1.every(Boolean);
+
+  // ch2
+  const ch2done=p.carb>=80;
+  const ch3done=p.hypo>=40;
+  const ch4done=p.plate>=50;
+  const ch5done=p.ex>=40;
+
+  setChapter('ch2Card','ch2Badge',ch1done,ch2done,()=>openChapter(2),"Bölüm 1'i tamamla → Açılır");
+  setChapter('ch3Card','ch3Badge',ch2done,ch3done,()=>openChapter(3),"Bölüm 2'yi tamamla → Açılır");
+  setChapter('ch4Card','ch4Badge',ch3done,ch4done,()=>openChapter(4),"Bölüm 3'ü tamamla → Açılır");
+  setChapter('ch5Card','ch5Badge',ch4done,ch5done,()=>openChapter(5),"Bölüm 4'ü tamamla → Açılır");
+
+  const ch2ec=document.getElementById('ch2EduChip');
+  if(ch1done){ch2ec.style.display='inline-flex';}
+
+  if(ch1done){document.getElementById('ch1Badge').textContent='✅ Tamam';document.getElementById('ch1Card').classList.add('completed');}
+  updateLevelUI();
+}
+
+function setChapter(cardId,badgeId,unlocked,done,fn,lockMsg){
+  const card=document.getElementById(cardId);
+  const badge=document.getElementById(badgeId);
+  if(unlocked){
+    card.classList.remove('locked');card.classList.add('unlocked');
+    card.onclick=fn;
+    badge.className='chbadge ob';badge.textContent=done?'✅ Tamam':'Oyna';
+    if(done)card.classList.add('completed');
+  } else {
+    card.classList.add('locked');card.classList.remove('unlocked');
+    card.onclick=null;badge.className='chbadge lb';badge.textContent='🔒 Kilitli';
+  }
+}
+
+function updateLevelUI(){
+  const p=sd.progress;
+  const eD=p.easy>=THR.easy,mD=p.medium>=THR.medium,hD=p.hard>=THR.hard;
+  const se=document.getElementById('stEasy');se.className='lst '+(eD?'done':'need');se.textContent=eD?'✅ Geçildi':'Hedef: 100p';
+  const lm=document.getElementById('lvlM'),sm=document.getElementById('stMed');
+  if(eD){lm.classList.remove('locked');lm.classList.add('unlocked');sm.className='lst '+(mD?'done':'need');sm.textContent=mD?'✅ Geçildi':'Hedef: 150p';}
+  else{lm.classList.add('locked');lm.classList.remove('unlocked');sm.className='lst lock';sm.textContent="🔒 Kolay'ı geç";}
+  const lh=document.getElementById('lvlH'),sh=document.getElementById('stHard');
+  if(mD){lh.classList.remove('locked');lh.classList.add('unlocked');sh.className='lst '+(hD?'done':'need');sh.textContent=hD?'✅ Geçildi':'Hedef: 200p';}
+  else{lh.classList.add('locked');lh.classList.remove('unlocked');sh.className='lst lock';sh.textContent="🔒 Orta'yı geç";}
+}
+
+// ══════════════════════════════════════════
+//  NAME SCREEN
+// ══════════════════════════════════════════
+window.onload=function(){const h=loadSave();if(h&&sd.playerName){document.getElementById('pni').value=sd.playerName;document.getElementById('savedMsg').style.display='block';}};
+function saveName(){const n=document.getElementById('pni').value.trim();if(!n){document.getElementById('pni').focus();return;}sd.playerName=n;saveSave();document.getElementById('homeBtn').style.display='flex';updateWorldUI();ss('worldScreen');}
+
+// ══════════════════════════════════════════
+//  CHAPTER 1 — MACRO GAME
+// ══════════════════════════════════════════
+function tryLevel(diff){
+  const p=sd.progress;const req={easy:true,medium:p.easy>=THR.easy,hard:p.medium>=THR.medium};
+  if(!req[diff]){showUnlock('🔒','Kilitli!',{medium:"Önce Kolay'ı 100p ile geç!",hard:"Önce Orta'yı 150p ile geç!"}[diff]);return;}
+  curChapter=1;startLevel(diff);
+}
+function startLevel(diff){
+  cDiff=diff;const cfg=DCFG[diff];
+  lives=cfg.lives;score=0;streak=0;cIdx=0;sessionXP=0;
+  cFoods=[...allFoods].sort(()=>Math.random()-.5).slice(0,cfg.TOTAL);
+  document.getElementById('score').textContent=0;document.getElementById('lives').textContent=lives;
+  document.getElementById('targetScore').textContent=cfg.target;document.getElementById('qTotal').textContent=cfg.TOTAL;
+  document.getElementById('timerWrap').classList.toggle('show',cfg.timer);
+  ['zsk','zsp','zsy'].forEach(id=>document.getElementById(id).classList.toggle('hidden',!cfg.sub));
+  const lb={easy:'🌱 Kolay',medium:'⚡ Orta',hard:'🔥 Zor'};
+  const b=document.getElementById('diffBadge');b.textContent=lb[diff];b.className=`dbadge ${diff}`;
+  document.getElementById('endScreen').classList.remove('show');document.getElementById('fov').classList.remove('show');
+  document.getElementById('streak').classList.remove('show');ss('gameScreen');loadQ();
+}
+function loadQ(){
+  const f=cFoods[cIdx];const cfg=DCFG[cDiff];
+  document.getElementById('fEmoji').textContent=f.emoji;document.getElementById('fName').textContent=f.name;
+  document.getElementById('qNum').textContent=cIdx+1;
+  document.getElementById('pFill').style.width=`${((cIdx+1)/cfg.TOTAL)*100}%`;
+  // GI badge
+  const gb=document.getElementById('giBadge');
+  if(f.gi&&f.answer==='karbonhidrat'){
+    const giMap={fast:{cls:'gi-fast',txt:'🔴 Hızlı Karbonhidrat'},mid:{cls:'gi-mid',txt:'🟡 Orta Hızlı'},slow:{cls:'gi-slow',txt:'🟢 Yavaş Karbonhidrat'}};
+    const gd=giMap[f.gi];gb.className=`gi-badge ${gd.cls}`;gb.textContent=gd.txt;gb.style.display='inline-flex';
+  }else{gb.style.display='none';}
+  const hb=document.getElementById('hBox');
+  if(cfg.hint==='none'){hb.classList.add('hidden');}
+  else{hb.classList.remove('hidden');hb.innerHTML=`💡 <strong>İpucu:</strong> ${cfg.hint==='full'?f.hint:f.hintShort}`;}
+  if(cfg.timer)startTimer();
+}
+function startTimer(){clearInterval(tInt);tLeft=10;updTimer();tInt=setInterval(()=>{tLeft-=.1;updTimer();if(tLeft<=0){clearInterval(tInt);timeUp();}},100);}
+function updTimer(){document.getElementById('tFill').style.width=Math.max(0,(tLeft/10)*100)+'%';document.getElementById('tLabel').textContent=Math.ceil(tLeft);}
+function timeUp(){pW();lives--;streak=0;document.getElementById('lives').textContent=lives;document.getElementById('streak').classList.remove('show');const f=cFoods[cIdx];const mn={karbonhidrat:'Karbonhidrat 🍞',protein:'Protein 💪',yag:'Yağ 🫒'};showFB(false,'⏰','Süre Doldu!',`Doğru: <strong>${mn[f.answer]}</strong><br><br>${f.explanation}`);}
+function checkAns(sel){
+  clearInterval(tInt);const f=cFoods[cIdx];const cfg=DCFG[cDiff];
+  if(sel===f.answer){
+    const pts=Math.round(10*cfg.bonus);score+=pts;streak++;sessionXP+=cfg.xpPer;
+    // slow carb bonus
+    if(f.gi==='slow'){score+=5;sessionXP+=3;document.getElementById('gameXP').textContent=`+${sessionXP} XP 🌟`;}
+    else document.getElementById('gameXP').textContent=`+${sessionXP} XP`;
+    document.getElementById('score').textContent=score;
+    streak>=3?pSt():pC();
+    if(streak>=2){document.getElementById('streakCount').textContent=streak;document.getElementById('streak').classList.add('show');}
+    const ems=['🎉','⭐','🏆','🌟','💯'];
+    let expTxt=f.explanation;
+    if(f.gi==='slow'&&f.answer==='karbonhidrat')expTxt+='<br><span style="color:#16a34a;font-weight:700">🌟 +5 Bonus! Yavaş karbonhidrat seçtin!</span>';
+    showFB(true,ems[Math.floor(Math.random()*ems.length)],streak>=3?`${streak} ART ARDA! 🔥`:'Harika! Doğru!',expTxt);
+  }else{
+    lives--;streak=0;pW();document.getElementById('lives').textContent=lives;document.getElementById('streak').classList.remove('show');
+    const mn={karbonhidrat:'Karbonhidrat 🍞',protein:'Protein 💪',yag:'Yağ 🫒'};
+    showFB(false,'😅','Neredeyse!',`Doğru: <strong>${mn[f.answer]}</strong><br><br>${f.explanation}`);
+  }
+}
+function showFB(ok,emoji,title,txt){
+  document.getElementById('fEmo').textContent=emoji;document.getElementById('fTit').textContent=title;
+  document.getElementById('fTit').className=`ft ${ok?'correct':'wrong'}`;
+  document.getElementById('fTxt').innerHTML=txt;document.getElementById('fNxt').onclick=nextQ;
+  document.getElementById('fov').classList.add('show');
+}
+function nextQ(){
+  document.getElementById('fov').classList.remove('show');cIdx++;
+  const cfg=DCFG[cDiff];
+  if(cIdx>=cfg.TOTAL||lives<=0)showEnd1();else loadQ();
+}
+function showEnd1(){
+  clearInterval(tInt);document.getElementById('streak').classList.remove('show');
+  const cfg=DCFG[cDiff];const passed=score>=cfg.target;
+  if(score>(sd.progress[cDiff]||0)){sd.progress[cDiff]=score;}
+  if(passed){addXP(sessionXP);}
+  saveSave();
+  const pct=score/(cfg.TOTAL*10*cfg.bonus);
+  let emi,tit,msg,stars;
+  if(!passed){emi='😢';tit='Hedef Tutmadı!';stars='⭐';msg=`${score} puan. Hedef: ${cfg.target}p. Tekrar dene! 💪`;}
+  else if(pct>=.9){emi='🏆';tit='Muhteşem!';stars='⭐⭐⭐';msg='Mükemmel! Makro kahramanısın! 🎓';}
+  else if(pct>=.65){emi='🌟';tit='Çok İyi!';stars='⭐⭐';msg='Harika! Bir sonraki zorluk seni bekliyor! 🚀';}
+  else{emi='✅';tit='Geçtin!';stars='⭐';msg='Hedefi aştın! Daha iyisi için tekrar dene! 💡';}
+  document.getElementById('eEmi').textContent=emi;document.getElementById('eTit').textContent=tit;
+  document.getElementById('eStars').textContent=stars;document.getElementById('eScr').textContent=`${score} Puan`;
+  document.getElementById('eMsg').innerHTML=msg;document.getElementById('endScreen').classList.add('show');
+  updateWorldUI();checkCostumeUnlock();
+  if(passed){
+    const p=sd.progress;
+    const unlocks={easy:{cond:p.easy>=THR.easy&&(p.easy-score)<THR.easy,emi:'⚡',tit:'Orta Açıldı!',sub:"Kolay'ı geçtin! Şimdi Orta zorluk seni bekliyor. 💪"},medium:{cond:p.medium>=THR.medium&&(p.medium-score)<THR.medium,emi:'🔥',tit:'Zor Açıldı!',sub:"Orta'yı geçtin! En zorlu seviye seni bekliyor. 🚀"},hard:{cond:p.hard>=THR.hard&&p.easy>=THR.easy&&p.medium>=THR.medium&&(p.hard-score)<THR.hard,emi:'🍽️',tit:'Bölüm 2 Açıldı!',sub:'Tüm seviyeleri geçtin! Karbonhidrat Sayımı seni bekliyor! 🎉'}};
+    const u=unlocks[cDiff];
+    if(u&&u.cond){setTimeout(()=>{pUn();showUnlock(u.emi,u.tit,u.sub);},1200);}
+  }
+}
+function restartLvl(){document.getElementById('endScreen').classList.remove('show');startLevel(cDiff);}
+
+// ══════════════════════════════════════════
+//  COSTUME UNLOCK CHECK
+// ══════════════════════════════════════════
+function checkCostumeUnlock(){
+  const xp=sd.xp||0;const c=getCostume(xp);
+  const prev=getCostume(xp-sessionXP);
+  if(c.minXP!==prev.minXP){
+    setTimeout(()=>{showCostumeUnlock(c);},1800);
+  }
+}
+function showCostumeUnlock(c){
+  document.getElementById('uEmi').textContent='';
+  document.getElementById('uTit').textContent='Yeni Kostüm Kazandın!';
+  document.getElementById('uSub').textContent='';
+  // custom card
+  const card=`<div class="costume-unlock"><div class="cu-stars">⭐ ⭐ ⭐</div><div class="cu-new">🎉 YENİ KOSTÜM!</div><span class="cu-avatar">${c.avatar}</span><div class="cu-name">${c.name}</div><div style="color:#FFD93D;font-size:.85rem;margin:4px 0">${c.label}</div><div class="cu-desc">${c.desc}</div></div>`;
+  document.getElementById('uSub').innerHTML=`<div style="font-size:.85rem;color:#555;margin-bottom:10px">XP eşiğini aştın!</div>`;
+  const ucrd=document.querySelector('.ucrd');
+  ucrd.innerHTML=`<span class="uemi">${c.avatar}</span><div class="utit">Yeni Kostüm!</div><div class="usub"><span style="font-size:1.5rem">${c.label}</span><br><br>${c.desc}</div><button class="ubtn" onclick="dismissUnlock()">Harika! 🎉</button>`;
+  pUn();document.getElementById('uov').classList.add('show');
+}
+
+// ══════════════════════════════════════════
+//  UNLOCK OVERLAY
+// ══════════════════════════════════════════
+function showUnlock(emi,tit,sub){
+  const ucrd=document.querySelector('.ucrd');
+  ucrd.innerHTML=`<span class="uemi">${emi}</span><div class="utit">${tit}</div><div class="usub">${sub}</div><button class="ubtn" onclick="dismissUnlock()">Harika! →</button>`;
+  document.getElementById('uov').classList.add('show');
+}
+function dismissUnlock(){document.getElementById('uov').classList.remove('show');}
+
+// ══════════════════════════════════════════
+//  CHAPTER 2 — CARB COUNT
+// ══════════════════════════════════════════
+function startCarb(){
+  cScore=0;cLives=3;cIdx2=0;cQ=[...carbFoods].sort(()=>Math.random()-.5);
+  document.getElementById('cScore').textContent=0;document.getElementById('cLives').textContent=3;
+  document.getElementById('cQT').textContent=cQ.length;document.getElementById('carbEnd').classList.remove('show');
+  document.getElementById('cTip').classList.remove('show');ss('carbScreen');loadCarb();
+}
+function loadCarb(){
+  const f=cQ[cIdx2];
+  document.getElementById('cEmoji').textContent=f.emoji;document.getElementById('cFN').textContent=f.name;
+  document.getElementById('cPort').textContent=f.portion;document.getElementById('cQN').textContent=cIdx2+1;
+  document.getElementById('cPFill').style.width=`${((cIdx2+1)/cQ.length)*100}%`;
+  document.getElementById('cTip').classList.remove('show');
+  const opts=document.getElementById('cOpts');opts.innerHTML='';
+  [...f.options].sort(()=>Math.random()-.5).forEach(v=>{
+    const b=document.createElement('div');b.className='cgopt';
+    const giLabel=f.gi?({fast:'🔴',mid:'🟡',slow:'🟢'}[f.gi]):'';
+    b.textContent=v+'g';
+    b.onclick=()=>checkCarb(v,b,f);opts.appendChild(b);
+  });
+}
+function checkCarb(val,btn,f){
+  document.querySelectorAll('.cgopt').forEach(b=>b.onclick=null);
+  const tip=document.getElementById('cTip');tip.innerHTML=`💡 ${f.tip}`;tip.classList.add('show');
+  if(val===f.carb){btn.classList.add('cok');cScore+=10;document.getElementById('cScore').textContent=cScore;pC();}
+  else{btn.classList.add('cno');document.querySelectorAll('.cgopt').forEach(b=>{if(b.textContent===f.carb+'g')b.classList.add('cok');});cLives--;document.getElementById('cLives').textContent=cLives;pW();}
+  setTimeout(()=>{cIdx2++;tip.classList.remove('show');if(cIdx2>=cQ.length||cLives<=0)showCarbEnd();else loadCarb();},2000);
+}
+function showCarbEnd(){
+  if(cScore>(sd.progress.carb||0)){sd.progress.carb=cScore;}
+  addXP(Math.floor(cScore/2));saveSave();
+  const pct=cScore/(cQ.length*10);
+  let emi,tit,stars,msg;
+  if(cLives<=0){emi='😢';tit='Canların Bitti!';stars='⭐';msg='Eğitim sayfasına bak ve tekrar dene! 💪';}
+  else if(pct>=.9){emi='🏆';tit='Karb Uzmanı!';stars='⭐⭐⭐';msg='Mükemmel! Karbonhidrat sayımında uzmanlaştın! 🎓';}
+  else if(pct>=.6){emi='🌟';tit='İyi Gidiyorsun!';stars='⭐⭐';msg='Biraz daha pratikle tam uzman olacaksın! 🚀';}
+  else{emi='📚';tit='Öğreniyorsun!';stars='⭐';msg='Eğitim sayfasına bir daha bak! 💡';}
+  document.getElementById('ceEmi').textContent=emi;document.getElementById('ceTit').textContent=tit;
+  document.getElementById('ceStars').textContent=stars;document.getElementById('ceScr').textContent=`${cScore} Puan`;
+  document.getElementById('ceMsg').textContent=msg;document.getElementById('carbEnd').classList.add('show');
+  updateWorldUI();checkCostumeUnlock();
+  if(pct>=.5&&(sd.progress.carb-cScore)<80){setTimeout(()=>{pUn();showUnlock('🚨','Bölüm 3 Açıldı!','Karbonhidrat sayımında yeterince öğrendin! Hipoglisemi Kahramanı modu seni bekliyor! 🎉');},1200);}
+}
+
+// ══════════════════════════════════════════
+//  CHAPTER 3 — HYPO
+// ══════════════════════════════════════════
+function startHypo(){
+  hScore=0;hIdx=0;hScen=[...hypoScenarios].sort(()=>Math.random()-.5);
+  document.getElementById('hScore').textContent=0;document.getElementById('hQT').textContent=hScen.length;
+  document.getElementById('hypoEnd').classList.remove('show');
+  document.getElementById('hypoResult').classList.remove('show');ss('hypoScreen');loadHypo();
+}
+function loadHypo(){
+  const s=hScen[hIdx];
+  document.getElementById('hypoScenario').textContent=s.scenario;
+  document.getElementById('hQN').textContent=hIdx+1;
+  document.getElementById('hypoResult').classList.remove('show');
+  const fc=document.getElementById('hypoFoods');fc.innerHTML='';
+  s.foods.forEach(f=>{
+    const d=document.createElement('div');d.className='hfood';
+    d.innerHTML=`<span class="hfe">${f.emoji}</span><div class="hfn">${f.name}</div><div class="hfd">${f.desc}</div>`;
+    d.onclick=()=>checkHypo(f,d);fc.appendChild(d);
+  });
+}
+function checkHypo(food,el){
+  document.querySelectorAll('.hfood').forEach(d=>d.onclick=null);
+  if(food.correct){hScore+=10;pC();}else{pW();}
+  document.getElementById('hScore').textContent=hScore;
+  document.getElementById('hrEmoji').textContent=food.correct?'✅':'❌';
+  document.getElementById('hrTitle').textContent=food.correct?'Doğru Seçim!':'Dikkat!';
+  document.getElementById('hrTitle').className=`hr-title ${food.correct?'good':'bad'}`;
+  document.getElementById('hrText').innerHTML=food.feedback;
+  const t15=document.getElementById('timer15');
+  if(food.correct&&food.showTimer){t15.style.display='flex';startTimerDisplay();}else{t15.style.display='none';}
+  document.getElementById('hypoResult').classList.add('show');
+}
+function startTimerDisplay(){
+  let t=15;const tc=document.getElementById('timerCircle');tc.textContent=15;
+  const iv=setInterval(()=>{t--;tc.textContent=t;if(t<=0){clearInterval(iv);tc.textContent='✅';}},200);
+}
+function nextHypo(){
+  hIdx++;
+  if(hIdx>=hScen.length)showHypoEnd();
+  else{document.getElementById('hypoResult').classList.remove('show');loadHypo();}
+}
+function showHypoEnd(){
+  if(hScore>(sd.progress.hypo||0)){sd.progress.hypo=hScore;}
+  addXP(Math.floor(hScore*1.5));saveSave();
+  const pct=hScore/(hScen.length*10);
+  let emi,tit,stars,msg;
+  if(pct>=.9){emi='🚑';tit='Hipoglisemi Kahramanı!';stars='⭐⭐⭐';msg='Mükemmel! Acil durumlarda ne yapacağını biliyorsun. Hayat kurtarabilirsin! 💙';}
+  else if(pct>=.6){emi='🌟';tit='İyi Gidiyorsun!';stars='⭐⭐';msg='Güzel! Ama bazı sorular zor olabilir. Tekrar dene! 🚀';}
+  else{emi='📚';tit='Öğreniyorsun!';stars='⭐';msg='15/15 kuralını tekrar gözden geçir! Bilmek hayat kurtarır! 💡';}
+  document.getElementById('heEmi').textContent=emi;document.getElementById('heTit').textContent=tit;
+  document.getElementById('heStars').textContent=stars;document.getElementById('heScr').textContent=`${hScore} Puan`;
+  document.getElementById('heMsg').textContent=msg;document.getElementById('hypoEnd').classList.add('show');
+  updateWorldUI();checkCostumeUnlock();
+  if(pct>=.5&&(sd.progress.hypo-hScore)<40){setTimeout(()=>{pUn();showUnlock('🥗','Bölüm 4 Açıldı!','Hipoglisemi konusunda iyi öğrendin! Tabağını Oluştur bölümü açıldı! 🎉');},1200);}
+}
+
+// ══════════════════════════════════════════
+//  CHAPTER 4 — PLATE
+// ══════════════════════════════════════════
+function startPlate(){
+  plScore=0;plIdx=0;plQ=[...plateQuestions].sort(()=>Math.random()-.5);
+  document.getElementById('plScore').textContent=0;document.getElementById('plQT').textContent=plQ.length;
+  document.getElementById('plateEnd').classList.remove('show');document.getElementById('plFeedback').style.display='none';
+  ss('plateScreen');loadPlate();
+}
+function loadPlate(){
+  const q=plQ[plIdx];
+  document.getElementById('plEmoji').textContent=q.emoji;document.getElementById('plFood').textContent=q.food;
+  document.getElementById('plQ').textContent=q.question;document.getElementById('plQN').textContent=plIdx+1;
+  document.getElementById('plPFill').style.width=`${((plIdx+1)/plQ.length)*100}%`;
+  document.getElementById('plFeedback').style.display='none';
+  const opts=document.getElementById('plOpts');opts.innerHTML='';
+  q.options.forEach(o=>{
+    const d=document.createElement('div');d.className='pair-opt';
+    d.innerHTML=`<span class="po-emoji">${o.emoji}</span><div class="po-name">${o.name}</div><div class="po-desc">${o.desc}</div>`;
+    d.onclick=()=>checkPlate(o,d);opts.appendChild(d);
+  });
+}
+function checkPlate(opt,el){
+  document.querySelectorAll('.pair-opt').forEach(d=>d.onclick=null);
+  el.classList.add(opt.correct?'pok':'pno');
+  if(opt.correct){plScore+=10;pC();}else pW();
+  document.getElementById('plScore').textContent=plScore;
+  const fb=document.getElementById('plFeedback');fb.innerHTML=opt.feedback;fb.style.display='block';
+  setTimeout(()=>{plIdx++;if(plIdx>=plQ.length)showPlateEnd();else{fb.style.display='none';loadPlate();}},2200);
+}
+function showPlateEnd(){
+  if(plScore>(sd.progress.plate||0)){sd.progress.plate=plScore;}
+  addXP(Math.floor(plScore*1.5));saveSave();
+  const pct=plScore/(plQ.length*10);
+  let emi,tit,stars,msg;
+  if(pct>=.9){emi='🥗';tit='Tabak Ustası!';stars='⭐⭐⭐';msg='Kombinasyon etkisini mükemmel anlıyorsun! 🎓';}
+  else if(pct>=.6){emi='🌟';tit='İyi Gidiyorsun!';stars='⭐⭐';msg='Besin kombinasyonlarını öğreniyorsun! 🚀';}
+  else{emi='📚';tit='Öğreniyorsun!';stars='⭐';msg='Karbonhidrat + Protein birlikteliğini tekrar gözden geçir! 💡';}
+  document.getElementById('peEmi').textContent=emi;document.getElementById('peTit').textContent=tit;
+  document.getElementById('peStars').textContent=stars;document.getElementById('peScr').textContent=`${plScore} Puan`;
+  document.getElementById('peMsg').textContent=msg;document.getElementById('plateEnd').classList.add('show');
+  updateWorldUI();checkCostumeUnlock();
+  if(pct>=.5&&(sd.progress.plate-plScore)<50){setTimeout(()=>{pUn();showUnlock('🏃','Bölüm 5 Açıldı!','Tabak kombinasyonlarını öğrendin! Egzersiz & İnsülin bölümü açıldı! 🎉');},1200);}
+}
+
+// ══════════════════════════════════════════
+//  CHAPTER 5 — EXERCISE
+// ══════════════════════════════════════════
+function startEx(){
+  exScore=0;exIdx=0;exQ=[...exScenarios].sort(()=>Math.random()-.5);
+  document.getElementById('exScore').textContent=0;document.getElementById('exQT').textContent=exQ.length;
+  document.getElementById('exEnd').classList.remove('show');document.getElementById('exFeedback').style.display='none';
+  ss('exScreen');loadEx();
+}
+function loadEx(){
+  const q=exQ[exIdx];
+  document.getElementById('exEmoji').textContent=q.emoji;document.getElementById('exTitle').textContent=q.title;
+  document.getElementById('exScenario').textContent=q.scenario;document.getElementById('exQN').textContent=exIdx+1;
+  document.getElementById('exFeedback').style.display='none';
+  const opts=document.getElementById('exOpts');opts.innerHTML='';
+  q.options.forEach(o=>{
+    const d=document.createElement('div');d.className='ex-opt';
+    d.innerHTML=`<span class="eo-emoji">${o.emoji}</span><div>${o.text}</div>`;
+    d.onclick=()=>checkEx(o,d);opts.appendChild(d);
+  });
+}
+function checkEx(opt,el){
+  document.querySelectorAll('.ex-opt').forEach(d=>d.onclick=null);
+  el.classList.add(opt.correct?'eok':'eno');
+  if(opt.correct){exScore+=10;pC();}else pW();
+  document.getElementById('exScore').textContent=exScore;
+  const fb=document.getElementById('exFeedback');fb.innerHTML=opt.feedback;fb.style.display='block';
+  setTimeout(()=>{exIdx++;if(exIdx>=exQ.length)showExEnd();else{fb.style.display='none';loadEx();}},2200);
+}
+function showExEnd(){
+  if(exScore>(sd.progress.ex||0)){sd.progress.ex=exScore;}
+  addXP(Math.floor(exScore*2));saveSave();
+  const pct=exScore/(exQ.length*10);
+  let emi,tit,stars,msg;
+  if(pct>=.9){emi='🏆';tit='Diyabet Ustası!';stars='⭐⭐⭐';msg='Tüm bölümleri tamamladın! Sen gerçek bir Makro Kahraman\'sın! 🦸🎓';}
+  else if(pct>=.6){emi='🌟';tit='Harikasın!';stars='⭐⭐';msg='Egzersiz ve insülin ilişkisini iyi anlıyorsun! 🚀';}
+  else{emi='📚';tit='Öğreniyorsun!';stars='⭐';msg='Egzersiz öncesi ve sonrası beslenmeyi tekrar gözden geçir! 💡';}
+  document.getElementById('eeEmi').textContent=emi;document.getElementById('eeTit').textContent=tit;
+  document.getElementById('eeStars').textContent=stars;document.getElementById('eeScr').textContent=`${exScore} Puan`;
+  document.getElementById('eeMsg').textContent=msg;document.getElementById('exEnd').classList.add('show');
+  updateWorldUI();checkCostumeUnlock();
+}
+
+// ══════════════════════════════════════════
+//  AI COACH
+// ══════════════════════════════════════════
+let aiHistory = [];
+
+function openAICoach() {
+  document.getElementById('aiov').classList.add('show');
+  document.getElementById('aiInput').focus();
+}
+
+function closeAICoach() {
+  document.getElementById('aiov').classList.remove('show');
+}
+
+function askQuick(q) {
+  document.getElementById('aiInput').value = q;
+  sendAIMsg();
+}
+
+function getPlayerContext() {
+  const p = sd.progress || {};
+  const xp = sd.xp || 0;
+  const name = sd.playerName || 'Kahraman';
+  return `Oyuncunun adı: ${name}. Toplam XP: ${xp}. Bölüm 1 (Kolay): ${p.easy||0}p, Orta: ${p.medium||0}p, Zor: ${p.hard||0}p. Bölüm 2 Karb: ${p.carb||0}p. Bölüm 3 Hipoglisemi: ${p.hypo||0}p. Bölüm 4 Tabak: ${p.plate||0}p. Bölüm 5 Egzersiz: ${p.ex||0}p.`;
+}
+
+async function sendAIMsg() {
+  const input = document.getElementById('aiInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  input.value = '';
+  document.getElementById('aiSend').disabled = true;
+  document.getElementById('aiQuickBtns').style.display = 'none';
+
+  // Add user message
+  appendAIMsg(msg, 'user');
+  aiHistory.push({ role: 'user', content: msg });
+
+  // Show loading
+  const loadId = appendAILoading();
+
+  const systemPrompt = `Sen "Makro Koç" adında, diyabetli çocuklar için makro besin öğeleri hakkında eğitici ve destekleyici bir AI koçsun. Oyun içinde yardım ediyorsun.
+
+Oyun hakkında bilgi:
+- "Makro Kahraman" oyunu, diyabetli çocuklara karbonhidrat, protein ve yağı tanımayı öğreten eğlenceli bir web oyunudur.
+- 5 bölüm var: 1) Makro Grupları, 2) Karbonhidrat Sayımı, 3) Hipoglisemi Kahramanı, 4) Tabağını Oluştur, 5) Egzersiz & İnsülin
+- Glisemik indeks: Hızlı (🔴), Orta (🟡), Yavaş (🟢)
+- 15/15 kuralı: Hipoglisemide 15g hızlı karbonhidrat ye, 15 dakika bekle, tekrar ölç.
+
+Oyuncu bilgisi: ${getPlayerContext()}
+
+Kurallar:
+- Türkçe konuş, samimi ve destekleyici ol
+- Çocuğa göre sade dil kullan (8-15 yaş)
+- Cevaplar kısa ve net olsun (maks 3-4 cümle)
+- Tıbbi tavsiye yerine eğitici bilgi ver; ciddi durumlar için doktora yönlendir
+- Emoji kullanmaktan çekinme 🎉`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: aiHistory,
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.content?.map(b => b.text || '').join('') || 'Bir hata oluştu, tekrar dene!';
+    removeAILoading(loadId);
+    appendAIMsg(reply, 'bot');
+    aiHistory.push({ role: 'assistant', content: reply });
+  } catch (e) {
+    removeAILoading(loadId);
+    appendAIMsg('Bağlantı sorunu oluştu. Tekrar dene! 🔄', 'bot');
+  }
+
+  document.getElementById('aiSend').disabled = false;
+  document.getElementById('aiInput').focus();
+}
+
+function appendAIMsg(text, role) {
+  const msgs = document.getElementById('aiMsgs');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}`;
+  div.innerHTML = role === 'bot'
+    ? `<span class="ai-avatar">🤖</span><div class="ai-bubble">${text}</div>`
+    : `<span class="ai-avatar">😊</span><div class="ai-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+let loadingCounter = 0;
+function appendAILoading() {
+  const id = 'loading_' + (++loadingCounter);
+  const msgs = document.getElementById('aiMsgs');
+  const div = document.createElement('div');
+  div.className = 'ai-msg bot';
+  div.id = id;
+  div.innerHTML = `<span class="ai-avatar">🤖</span><div class="ai-bubble loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function removeAILoading(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+// Show AI Coach tip after chapter end
+function showAIChapterTip(chapterName, score, total) {
+  setTimeout(() => {
+    const pct = Math.round((score / total) * 100);
+    const prompt = `${chapterName} bölümünü ${pct}% başarıyla tamamladım (${score}/${total} puan). Bana kısa bir motivasyon ve bu bölümle ilgili 1 ipucu ver!`;
+    document.getElementById('aiov').classList.add('show');
+    document.getElementById('aiInput').value = prompt;
+    document.getElementById('aiQuickBtns').style.display = 'none';
+    sendAIMsg();
+  }, 800);
+}
+
+// ══════════════════════════════════════════
+//  EDU CONTENT
+// ══════════════════════════════════════════
+function getEdu(ch){
+  const back=`<button class="back-btn" onclick="backFromEdu()">← Geri</button><div style="height:8px"></div>`;
+  if(ch===1)return back+`
+  <div class="edu-main-title">📖 Makrolar Nedir? <span>Öğren!</span></div>
+  <div class="edu-intro">Vücudumuzun her gün enerjiye ihtiyacı var. Bu enerjiyi <strong>besinlerden</strong> alıyoruz. Besinler 3 büyük gruba ayrılır: <strong>Karbonhidrat</strong>, <strong>Protein</strong> ve <strong>Yağ</strong>. Bunlara <em>makro besin öğeleri</em> diyoruz. Diyabetli çocukların bu grupları iyi tanıması çok önemli! 💙</div>
+  <div class="macro-grid">
+    <div class="mcrd k"><div class="mci">🍞</div><div class="mct">Karbonhidrat</div><div class="mcb">Vücudun hızlı enerji kaynağı. Kan şekerini etkiler. Porsiyona dikkat!</div></div>
+    <div class="mcrd p"><div class="mci">💪</div><div class="mct">Protein</div><div class="mcb">Kas ve doku yapıcı. Büyüme için şart. Kan şekerini az etkiler.</div></div>
+    <div class="mcrd y"><div class="mci">🫒</div><div class="mct">Yağ</div><div class="mcb">Depo enerji kaynağı. Vitaminleri taşır. Az miktarda tüketilmeli.</div></div>
+  </div>
+  <div class="esect">🚦 Glisemik İndeks — Karbonhidratların Hızı</div>
+  <div class="edu-intro">Tüm karbonhidratlar aynı hızda kan şekerini yükseltmez! <strong>Glisemik İndeks (Gİ)</strong>, bir besinin kan şekerini ne kadar hızlı yükselttiğini gösterir.<br><br>🔴 <strong>Hızlı (Yüksek Gİ):</strong> Beyaz pirinç, meyve suyu, şeker, simit<br>🟡 <strong>Orta:</strong> Muz, beyaz ekmek, makarna<br>🟢 <strong>Yavaş (Düşük Gİ):</strong> Yulaf, bulgur, elma, baklagiller<br><br>Diyabetliler için <strong>yavaş karbonhidrat</strong> tercih etmek kan şekerini daha dengeli tutar! Oyunda yavaş karbonhidrat seçince bonus puan kazanırsın! 🌟</div>
+  <div class="esect">🍞 Karbonhidrat İçeren Besinler</div>
+  <div class="flist">
+    <div class="fitem"><div class="fe">🍞</div><div><div class="fn">Ekmek 🟡</div><div class="fd">1 dilim ≈ 12g. Tam buğday daha sağlıklı.</div></div></div>
+    <div class="fitem"><div class="fe">🍚</div><div><div class="fn">Pirinç 🔴</div><div class="fd">4 kaşık ≈ 28g. Hızlı yükseltir!</div></div></div>
+    <div class="fitem"><div class="fe">🌾</div><div><div class="fn">Yulaf 🟢</div><div class="fd">Yavaş sindirilir. İdeal kahvaltı!</div></div></div>
+    <div class="fitem"><div class="fe">🌾</div><div><div class="fn">Bulgur 🟢</div><div class="fd">Pirinçten çok daha iyi seçim!</div></div></div>
+    <div class="fitem"><div class="fe">🍌</div><div><div class="fn">Muz 🟡</div><div class="fd">Doğal şeker. Orta etki.</div></div></div>
+    <div class="fitem"><div class="fe">🍎</div><div><div class="fn">Elma 🟢</div><div class="fd">Lifli meyve. Yavaş yükseltir.</div></div></div>
+  </div>
+  <div class="tipbox">💡 <strong>İpucu:</strong> Oyunda Yavaş Karbonhidrat (🟢) seçtiğinde +5 bonus puan kazanırsın!</div>
+  <div style="height:20px"></div>`;
+
+  if(ch===2)return back+`
+  <div class="edu-main-title">📖 Karbonhidrat <span>Sayımı!</span></div>
+  <div class="edu-intro">Karbonhidrat sayımı, diyabetli bireylerin kan şekerini kontrol etmesinin en önemli yollarından biridir. Her yemeğin kaç gram karbonhidrat içerdiğini bilmek, insülin dozunu doğru ayarlamanı sağlar!</div>
+  <div class="esect">📊 Besinlerin Karbonhidrat İçerikleri</div>
+  <table class="ctable">
+    <tr><th>Besin</th><th>Porsiyon</th><th>Karb</th><th>Hız</th></tr>
+    <tr><td>🍞 Ekmek</td><td>1 dilim (25g)</td><td>12g</td><td><span class="cbadge mid">🟡 Orta</span></td></tr>
+    <tr><td>🍚 Pirinç Pilavı</td><td>4 kaşık (100g)</td><td>28g</td><td><span class="cbadge high">🔴 Hızlı</span></td></tr>
+    <tr><td>🌾 Bulgur</td><td>4 kaşık (100g)</td><td>24g</td><td><span class="cbadge low">🟢 Yavaş</span></td></tr>
+    <tr><td>🌾 Yulaf</td><td>1 kase</td><td>30g</td><td><span class="cbadge low">🟢 Yavaş</span></td></tr>
+    <tr><td>🍌 Muz</td><td>1 orta boy</td><td>25g</td><td><span class="cbadge mid">🟡 Orta</span></td></tr>
+    <tr><td>🍎 Elma</td><td>1 orta boy</td><td>20g</td><td><span class="cbadge low">🟢 Yavaş</span></td></tr>
+    <tr><td>🥔 Patates</td><td>1 orta boy</td><td>22g</td><td><span class="cbadge high">🔴 Hızlı</span></td></tr>
+    <tr><td>🥯 Simit</td><td>1 adet (80g)</td><td>42g</td><td><span class="cbadge high">🔴 Hızlı</span></td></tr>
+    <tr><td>🥛 Süt</td><td>1 bardak</td><td>10g</td><td><span class="cbadge low">🟢 Yavaş</span></td></tr>
+    <tr><td>🍊 Portakal Suyu</td><td>1 bardak</td><td>22g</td><td><span class="cbadge high">🔴 Hızlı</span></td></tr>
+  </table>
+  <div class="tipbox">🌟 <strong>Unutma!</strong> Diyabet seni farklı yapmaz — sadece biraz daha dikkatli olmanı gerektirir. Karbonhidratları saymasını öğrendiğinde, yemeklerini özgürce planlayabilirsin. Sen bir <strong>Makro Kahraman'sın!</strong> 🦸</div>
+  <div style="height:20px"></div>`;
+
+  return back+`<div class="edu-main-title">📖 <span>Bölüm Bilgisi</span></div><div class="edu-intro">Bu bölüm için özel içerik yakında eklenecek! Oyunu oynayarak öğrenebilirsin. 🎮</div><div style="height:20px"></div>`;
+}
+</script>
+</body>
+</html>
